@@ -35,7 +35,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # Per lo sviluppo, ci basta accettare richieste dal nostro server frontend.
 origins = [
     "http://localhost:3000", # Per lo sviluppo locale
-    "https://text-validator-frontend-5qeuwfxjo-davides-projects-97f15092.vercel.app", # L'URL di produzione
+    "https://text-validator-frontend-ne0m6kwvq-davides-projects-97f15092.vercel.app", # L'URL di produzione
 ]
 
 app.add_middleware(

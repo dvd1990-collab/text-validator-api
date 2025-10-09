@@ -1,3 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Rimuovi la forzatura temporanea dello sfondo quando Tailwind funziona */
+/* La forzatura del background-color dal body nel CSS precedente va ora rimossa,
+   perché Tailwind ora dovrebbe applicarlo correttamente.
+   Il file deve contenere solo @import "tailwindcss"; e i tuoi custom styles se li vuoi. */
