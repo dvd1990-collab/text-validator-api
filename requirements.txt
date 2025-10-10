@@ -4,3 +4,8 @@ google-generativeai
 python-dotenv
 slowapi
 redis
+supabase
+requests
+gotrue
+svix
+python-jose

@@ -1,5 +1,8 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
+// --- NUOVA IMPORTAZIONE DI CLERK ---
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "Text Validator",
@@ -12,10 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased`}>
-        {children}
-      </body>
-    </html>
+    // --- AVVOLGI L'APPLICAZIONE CON CLERKPROVIDER ---
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`antialiased`}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
