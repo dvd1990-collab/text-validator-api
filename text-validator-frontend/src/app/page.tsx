@@ -2,13 +2,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-// Rimuovi l'importazione di useRouter e supabase, non più usati direttamente per l'auth
-// import { useRouter } from 'next/navigation';
-// import { supabase } from '@/lib/supabase';
-
-// --- NUOVE IMPORTAZIONI DI CLERK ---
 import { useUser, useAuth } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation'; // Manteniamo useRouter per i reindirizzamenti
+import { useRouter } from 'next/navigation';
 
 type QualityReport = {
   reasoning: string;
@@ -35,29 +30,22 @@ export default function HomePage() {
     "Traduttore Tecnico IT",
     "Specialista Comunicazioni HR",
     "Ottimizzatore Email di Vendita",
+    "L'Umanizzatore",
   ];
   const [selectedProfile, setSelectedProfile] = useState(profileOptions[0]);
   
-  // --- NUOVI HOOKS DI CLERK ---
-  const { isLoaded, isSignedIn, user } = useUser(); // Per lo stato dell'utente
-  const { signOut, getToken } = useAuth(); // Per il logout e ottenere il JWT
-  const router = useRouter(); // Mantenuto per reindirizzamenti manuali se necessari
+  const { isLoaded, isSignedIn, user } = useUser();
+  const { signOut, getToken } = useAuth();
+  const router = useRouter();
 
-  // Rimuovi completamente i vecchi useEffect per la sessione Supabase
-  // useEffect(() => { ... }, []);
-  // Rimuovi completamente il vecchio useEffect per il reindirizzamento
-  // useEffect(() => { ... }, [userSession, loadingSession, router]);
-
-  // Clerk gestirà i reindirizzamenti automaticamente grazie al middleware.
-  // Tuttavia, potresti voler mostrare uno stato di caricamento mentre Clerk inizializza.
   useEffect(() => {
     const fetchUsage = async () => {
         if (!isLoaded || !isSignedIn) {
-            return; // Aspetta che Clerk abbia caricato e l'utente sia autenticato
+            return;
         }
 
         try {
-            const token = await getToken(); // Ottieni il token di Clerk
+            const token = await getToken();
             if (!token) {
                 console.error("Impossibile ottenere il token di autenticazione per fetchUsage.");
                 return;
@@ -65,11 +53,11 @@ export default function HomePage() {
 
             const headers: HeadersInit = {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Invia il token Clerk
+                'Authorization': `Bearer ${token}`,
             };
 
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/user-status`, { // Chiamata al nuovo endpoint
+            const response = await fetch(`${apiUrl}/user-status`, {
                 method: 'GET',
                 headers: headers,
             });
@@ -78,7 +66,6 @@ export default function HomePage() {
                 const errorData = await response.json();
                 console.error('Errore nel recupero dello stato utente:', errorData.detail || 'Errore sconosciuto.');
                 if (response.status === 401) {
-                    // Se il token è scaduto o non valido, forza il logout
                     await signOut(() => router.push('/login'));
                     alert('La sessione è scaduta durante il caricamento dello stato. Effettua nuovamente il login.');
                 }
@@ -93,7 +80,7 @@ export default function HomePage() {
         }
     };
     fetchUsage();
-  }, [isLoaded, isSignedIn, getToken, signOut, router]); // Dipendenze per rieseguire l'hook quando lo stato di auth cambia
+  }, [isLoaded, isSignedIn, getToken, signOut, router]);
   
   if (!isLoaded) {
     return (
@@ -103,8 +90,6 @@ export default function HomePage() {
     );
   }
 
-  // Se l'utente non è autenticato e Clerk ha finito di caricare,
-  // il middleware dovrebbe già aver reindirizzato. Questo è un fallback.
   if (!isSignedIn) {
      router.push('/login');
      return (
@@ -115,10 +100,9 @@ export default function HomePage() {
   }
 
   const handleValidate = async () => {
-    // --- MODIFICATO: userSession non esiste più, usiamo isSignedIn di Clerk ---
     if (!isSignedIn) {
       alert('Devi essere autenticato per validare il testo.');
-      router.push('/login'); // Reindirizza se per qualche motivo non è loggato
+      router.push('/login');
       return;
     }
     if (!inputText.trim()) {
@@ -130,15 +114,14 @@ export default function HomePage() {
     setQualityReport(null);
 
     try {
-      // --- MODIFICATO: Otteniamo il token JWT da Clerk ---
-      const token = await getToken(); // Questo ottiene il JWT di Clerk
+      const token = await getToken();
       if (!token) {
         throw new Error("Impossibile ottenere il token di autenticazione da Clerk.");
       }
 
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Usiamo il token di Clerk
+        'Authorization': `Bearer ${token}`,
       };
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -156,7 +139,6 @@ export default function HomePage() {
 
       if (!response.ok) {
         if (response.status === 401) {
-            // Se il token è scaduto o non valido, forza il logout
             await signOut(() => router.push('/login'));
             alert('La sessione è scaduta. Effettua nuovamente il login.');
             return;
@@ -214,11 +196,9 @@ export default function HomePage() {
     setQualityReport(null);
   };
 
-  // --- LOGICA DI LOGOUT MODIFICATA PER CLERK ---
   const handleLogout = async () => {
       setIsLoading(true);
       try {
-          // Utilizza il metodo signOut di Clerk
           await signOut(() => router.push('/login'));
       } catch (error: any) {
           console.error('Errore durante il logout:', error.message);
@@ -228,21 +208,21 @@ export default function HomePage() {
       }
   };
   
-  // Rimuovi il rendering condizionale basato su loadingSession e userSession
-  // if (loadingSession || !userSession) { ... }
-  // if (!userSession) { ... }
-  // La gestione del caricamento e del reindirizzamento iniziale è ora sopra,
-  // gestita da !isLoaded e !isSignedIn.
-
-  // Se il caricamento è finito E l'utente è autenticato, mostra l'applicazione.
   return (
     <main className="flex min-h-screen flex-col items-center bg-gray-900 p-8 text-white">
       <div className="w-full max-w-4xl">
         <header className="mb-8 text-center relative">
         
-          <div className="absolute top-0 right-0 flex items-center space-x-4">
+          <div className="absolute top-0 right-4 flex flex-col items-end space-y-2"> 
+            <button
+              onClick={handleLogout}
+              disabled={isLoading}
+              className="rounded-lg bg-red-700 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-red-600 transition-colors duration-200"
+            >
+              Logout ({user?.emailAddresses[0]?.emailAddress || 'utente'})
+            </button>
             {usageCount !== null && usageLimit !== null && (
-              <div className="text-sm text-gray-400 bg-gray-800 px-3 py-1 rounded-md">
+              <div className="text-sm text-gray-300 bg-gray-700 px-3 py-1 rounded-md shadow-sm">
                 {usageLimit === -1 ? (
                   <span>Utilizzo: Illimitato</span>
                 ) : (
@@ -250,20 +230,14 @@ export default function HomePage() {
                 )}
               </div>
             )}
-            <button
-              onClick={handleLogout}
-              disabled={isLoading}
-              className="rounded-md bg-red-600 px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
-            >
-              {/* --- MODIFICATO: user.emailAddress per Clerk --- */}
-              Logout ({user?.emailAddresses[0]?.emailAddress || 'utente'})
-            </button>
           </div>
 
-          <h1 className="text-4xl font-bold text-blue-400">Text Validator</h1>
-          <p className="mt-2 text-gray-400">
+          {/* INIZIO MODIFICHE: Font Titolo e Sottotitolo */}
+          <h1 className="text-4xl font-extrabold text-blue-400">Text Validator</h1> {/* Modificato da font-bold a font-extrabold */}
+          <p className="mt-2 text-gray-400 font-semibold"> {/* Aggiunto font-semibold */}
             Pulisci, normalizza e valida la qualità dei tuoi testi in un solo click.
           </p>
+          {/* FINE MODIFICHE: Font Titolo e Sottotitolo */}
         </header>
 
         <div className="mb-6">
@@ -275,7 +249,7 @@ export default function HomePage() {
             value={selectedProfile}
             onChange={(e) => setSelectedProfile(e.target.value)}
             disabled={isLoading}
-            className="w-full rounded-md border-gray-600 bg-gray-800 p-3 text-gray-200 focus:border-blue-500 focus:ring-blue-500"
+            className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200"
           >
             {profileOptions.map((profile) => (
               <option key={profile} value={profile}>
@@ -294,7 +268,7 @@ export default function HomePage() {
               <button
                 onClick={handleClear}
                 disabled={!inputText || isLoading}
-                className="rounded-md bg-gray-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed"
+                className="rounded-lg bg-gray-700 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-gray-600 transition-colors duration-200 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed"
               >
                 Pulisci
               </button>
@@ -302,7 +276,7 @@ export default function HomePage() {
             <textarea
               id="inputText"
               rows={15}
-              className="w-full rounded-md border-gray-600 bg-gray-800 p-3 text-gray-200 focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 resize-none transition-all duration-200"
               placeholder="## Report Settimanale..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -318,7 +292,7 @@ export default function HomePage() {
               <button
                 onClick={handleCopy}
                 disabled={!outputText || isLoading || outputText.startsWith('Elaborazione') || outputText.startsWith('Errore')}
-                className="rounded-md bg-gray-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-500 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed"
+                className="rounded-lg bg-gray-700 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-gray-600 transition-colors duration-200 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed"
               >
                 {copyButtonText}
               </button>
@@ -326,7 +300,7 @@ export default function HomePage() {
             <textarea
               id="outputText"
               rows={15}
-              className="w-full rounded-md border-gray-600 bg-gray-700 p-3 text-gray-200"
+              className="w-full rounded-lg border border-gray-700 bg-gray-800 p-3 text-gray-200 shadow-sm resize-none"
               placeholder="Il risultato apparirà qui..."
               value={outputText}
               readOnly
@@ -338,14 +312,14 @@ export default function HomePage() {
           <button
             onClick={handleValidate}
             disabled={isLoading}
-            className="rounded-md bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow-sm hover:bg-blue-500 disabled:bg-gray-500 disabled:cursor-not-allowed"
+            className="rounded-xl bg-blue-700 px-10 py-4 text-xl font-bold text-white shadow-lg hover:bg-blue-600 transition-all duration-300 disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Validazione in corso...' : 'Valida Testo'}
           </button>
         </div>
 
         {qualityReport && (
-          <div className="mt-8 rounded-lg bg-gray-800 p-6 border border-gray-700">
+          <div className="mt-8 rounded-xl bg-gray-800 p-6 border border-gray-700 shadow-xl">
             <h2 className="text-2xl font-semibold text-blue-400">Report di Qualità</h2>
             <div className="mt-4 flex items-center justify-center text-center">
               <p className="text-6xl font-bold text-green-400">{qualityReport.human_quality_score}</p>
