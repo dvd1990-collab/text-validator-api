@@ -11,44 +11,58 @@ from fastapi import Header
 from dotenv import load_dotenv
 load_dotenv()
 from svix.webhooks import Webhook, WebhookVerificationError # <-- MODIFICA QUESTA RIG
-
 from supabase import create_client, Client
 # --- NUOVE IMPORTAZIONI PER IL CORS ---
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-
 import ai_core
+# --- Aggiungi l'importazione per la verifica dei JWT RS256 ---
+from jose import jwt, jwk # pip install python-jose
 
 # --- Aggiungi l'importazione per la verifica dei JWT RS256 ---
 from jose import jwt, jwk # pip install python-jose
 
+# --- INIZIO: NUOVI CONTROLLI VARIABILI D'AMBIENTE CRITICHE ---
+
+# Variabili Clerk
 CLERK_WEBHOOK_SECRET = os.getenv("CLERK_WEBHOOK_SECRET")
 if not CLERK_WEBHOOK_SECRET:
     logging.error("CLERK_WEBHOOK_SECRET non configurato.")
-    # Puoi scegliere di far crashare l'app o sollevare un'eccezione
-    # per assicurarti che non vada in produzione senza il segreto.
     raise ValueError("CLERK_WEBHOOK_SECRET non trovata nel file .env o nelle variabili d'ambiente.")
 
-from supabase import create_client, Client
+CLERK_JWKS_URL = os.getenv("CLERK_JWKS_URL")
+if not CLERK_JWKS_URL:
+    logging.error("CLERK_JWKS_URL non configurato.")
+    raise ValueError("CLERK_JWKS_URL non trovata nel file .env o nelle variabili d'ambiente.")
 
-url: str = os.environ.get("SUPABASE_URL")
-key: str = os.environ.get("SUPABASE_SERVICE_KEY")
-supabase: Client = create_client(url, key)
+# Variabili Supabase
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+if not SUPABASE_URL:
+    logging.error("SUPABASE_URL non configurato.")
+    raise ValueError("SUPABASE_URL non trovata nel file .env o nelle variabili d'ambiente.")
+
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
+if not SUPABASE_SERVICE_KEY:
+    logging.error("SUPABASE_SERVICE_KEY non configurato.")
+    raise ValueError("SUPABASE_SERVICE_KEY non trovata nel file .env o nelle variabili d'ambiente.")
+
+# Variabili Google AI (Gemini)
+# ai_core.py ha già un controllo, ma lo duplichiamo qui per un fail-fast a livello di app principale.
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    logging.error("GOOGLE_API_KEY non configurato.")
+    raise ValueError("GOOGLE_API_KEY non trovata nel file .env o nelle variabili d'ambiente.")
+
+# --- FINE: NUOVI CONTROLLI VARIABILI D'AMBIENTE CRITICHE ---
+
+# Inizializzazione Supabase con le variabili verificate
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 CLERK_JWKS_URL = os.getenv("CLERK_JWKS_URL")
 if not CLERK_JWKS_URL:
     raise ValueError("CLERK_JWKS_URL non trovata nel file .env")
-
-# --- NUOVA IMPORTAZIONE PER IL CORS ---
-from fastapi.middleware.cors import CORSMiddleware
-
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
- 
-import ai_core
 
 # --- Pydantic Models ---
 class TextInput(BaseModel):
