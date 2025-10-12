@@ -2,8 +2,10 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useUser, useAuth } from '@clerk/nextjs';
+// <--- AGGIUNTA IMPORTAZIONE MANCANTE QUI
+import { useAuth, useUser } from '@clerk/nextjs'; // Reinseriamo useUser e useAuth
 import { useRouter } from 'next/navigation';
+// Rimosso Link, non più necessario qui
 
 type QualityReport = {
   reasoning: string;
@@ -16,8 +18,9 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [qualityReport, setQualityReport] = useState<QualityReport | null>(null);
   const [copyButtonText, setCopyButtonText] = useState('Copia');
-  const [usageCount, setUsageCount] = useState<number | null>(null);
-  const [usageLimit, setUsageLimit] = useState<number | null>(null);
+  // Rimuovi lo stato per usageCount e usageLimit, ora gestito nella Navbar
+  // const [usageCount, setUsageCount] = useState<number | null>(null);
+  // const [usageLimit, setUsageLimit] = useState<number | null>(null);
 
   const profileOptions = [
     "Generico",
@@ -34,72 +37,22 @@ export default function HomePage() {
   ];
   const [selectedProfile, setSelectedProfile] = useState(profileOptions[0]);
   
-  const { isLoaded, isSignedIn, user } = useUser();
-  const { signOut, getToken } = useAuth();
-  const router = useRouter();
+  // Ora che usiamo useAuth e useRouter localmente, li definiamo qui.
+  const { isSignedIn, getToken } = useAuth(); // <--- OK, useAuth è ora importato
+  const router = useRouter(); 
 
-  useEffect(() => {
-    const fetchUsage = async () => {
-        if (!isLoaded || !isSignedIn) {
-            return;
-        }
 
-        try {
-            const token = await getToken();
-            if (!token) {
-                console.error("Impossibile ottenere il token di autenticazione per fetchUsage.");
-                return;
-            }
-
-            const headers: HeadersInit = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            };
-
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiUrl}/user-status`, {
-                method: 'GET',
-                headers: headers,
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Errore nel recupero dello stato utente:', errorData.detail || 'Errore sconosciuto.');
-                if (response.status === 401) {
-                    await signOut(() => router.push('/login'));
-                    alert('La sessione è scaduta durante il caricamento dello stato. Effettua nuovamente il login.');
-                }
-                return;
-            }
-
-            const data = await response.json();
-            setUsageCount(data.count);
-            setUsageLimit(data.limit);
-        } catch (error) {
-            console.error('Errore sconosciuto durante il recupero dello stato utente:', error);
-        }
-    };
-    fetchUsage();
-  }, [isLoaded, isSignedIn, getToken, signOut, router]);
+  // Rimuovi completamente l'useEffect per fetchUsage, ora gestito nella Navbar
+  // useEffect(() => { /* ... */ }, [isLoaded, isSignedIn, getToken, signOut, router]);
   
-  if (!isLoaded) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
-        <p>Caricamento autenticazione...</p>
-      </main>
-    );
-  }
+  // Il caricamento e il reindirizzamento iniziale sono ora gestiti in layout.tsx e middleware.ts
+  // Quindi possiamo rimuovere questi blocchi condizionali
+  // if (!isLoaded) { /* ... */ }
+  // if (!isSignedIn) { /* ... */ }
 
-  if (!isSignedIn) {
-     router.push('/login');
-     return (
-        <main className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
-            <p>Reindirizzamento al login...</p>
-        </main>
-     );
-  }
 
   const handleValidate = async () => {
+    // Il check isSignedIn è ancora valido qui
     if (!isSignedIn) {
       alert('Devi essere autenticato per validare il testo.');
       router.push('/login');
@@ -139,7 +92,9 @@ export default function HomePage() {
 
       if (!response.ok) {
         if (response.status === 401) {
-            await signOut(() => router.push('/login'));
+            // Qui usiamo signOut direttamente se la sessione fallisce
+            // Poiché Navbar gestisce il suo stato, non è necessario passarglielo
+            await (await import('@clerk/nextjs')).signOut(() => router.push('/login')); 
             alert('La sessione è scaduta. Effettua nuovamente il login.');
             return;
         }
@@ -155,8 +110,10 @@ export default function HomePage() {
 
       setOutputText(data.normalized_text);
       setQualityReport(data.quality_report);
-      setUsageCount(data.usage.count);
-      setUsageLimit(data.usage.limit);
+      // Rimuovi l'aggiornamento dello stato per usageCount e usageLimit qui,
+      // la Navbar lo gestirà autonomamente dopo il proprio fetch.
+      // setUsageCount(data.usage.count);
+      // setUsageLimit(data.usage.limit);
 
     } catch (error) {
         if (error instanceof Error) {
@@ -196,24 +153,21 @@ export default function HomePage() {
     setQualityReport(null);
   };
 
-  const handleLogout = async () => {
-      setIsLoading(true);
-      try {
-          await signOut(() => router.push('/login'));
-      } catch (error: any) {
-          console.error('Errore durante il logout:', error.message);
-          alert('Errore durante il logout: ' + error.message);
-      } finally {
-          setIsLoading(false);
-      }
-  };
+  // Rimuovi handleLogout, ora gestito nella Navbar
+  // const handleLogout = async () => { /* ... */ };
   
   return (
+    // La main tag non ha più bisogno di padding top, ci pensa il layout
     <main className="flex min-h-screen flex-col items-center bg-gray-900 p-8 text-white">
       <div className="w-full max-w-4xl">
         <header className="mb-8 text-center relative">
         
-          <div className="absolute top-0 right-4 flex flex-col items-end space-y-2"> 
+          {/* RIMOSSO: Il div con Pricing, Logout e Contatore, ora gestito dalla Navbar */}
+          {/*
+          <div className="absolute top-8 right-4 flex flex-col items-end space-y-2"> 
+            <Link href="/pricing" className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg text-sm shadow-md transition-colors duration-200">
+                Pricing
+            </Link>
             <button
               onClick={handleLogout}
               disabled={isLoading}
@@ -231,13 +185,12 @@ export default function HomePage() {
               </div>
             )}
           </div>
+          */}
 
-          {/* INIZIO MODIFICHE: Font Titolo e Sottotitolo */}
-          <h1 className="text-4xl font-extrabold text-blue-400">Text Validator</h1> {/* Modificato da font-bold a font-extrabold */}
-          <p className="mt-2 text-gray-400 font-semibold"> {/* Aggiunto font-semibold */}
+          <h1 className="text-4xl font-extrabold text-blue-400">Text Validator</h1>
+          <p className="mt-2 text-gray-400 font-semibold">
             Pulisci, normalizza e valida la qualità dei tuoi testi in un solo click.
           </p>
-          {/* FINE MODIFICHE: Font Titolo e Sottotitolo */}
         </header>
 
         <div className="mb-6">
