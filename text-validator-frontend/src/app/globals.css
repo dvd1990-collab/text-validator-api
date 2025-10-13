@@ -1,6 +1,18 @@
-@import "tailwindcss";
+/* src/app/globals.css */
+@import "tailwindcss"; /* <--- CORREZIONE QUI: Usa solo l'importazione principale di Tailwind */
 
-/* Rimuovi la forzatura temporanea dello sfondo quando Tailwind funziona */
-/* La forzatura del background-color dal body nel CSS precedente va ora rimossa,
-   perché Tailwind ora dovrebbe applicarlo correttamente.
-   Il file deve contenere solo @import "tailwindcss"; e i tuoi custom styles se li vuoi. */
+/* Aggiungi questa animazione personalizzata SE VUOI LA PULSAZIONE SULLA ROADMAP */
+@keyframes pulse-once {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-once {
+  animation: pulse-once 1.5s ease-out 1; /* Esegue l'animazione una sola volta */
+}

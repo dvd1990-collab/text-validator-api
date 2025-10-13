@@ -23,48 +23,41 @@ export default function TextValidatorAIPage() {
       <div className="w-full max-w-4xl">
         <header className="mb-16 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold text-blue-400 mb-4 leading-tight">
-            L'Unica Soluzione AI per Testi B2B Autentici e Certificati.
+            L'Unica Soluzione AI per Testi B2B Autentici e di Qualità Verificata.
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Text Validator AI trasforma il contenuto generato automaticamente in messaggi professionali, coerenti e indistinguibili da quelli umani, validandone la qualità con precisione.
+            Text Validator AI trasforma il contenuto generato automaticamente in messaggi professionali, coerenti e indistinguibili da quelli umani, <strong>validandone la qualità tramite la nostra metodologia proprietaria.</strong>
           </p>
         </header>
 
-		{/* II. Sezione Workflow (Come Funziona) */}
-        <section className="mb-16 py-16">
-          <h2 className="text-4xl font-bold text-center text-blue-400 mb-12">Come Funziona il Doppio Controllo AI</h2>
+		{/* Sezione: Cosa facciamo e come lo certifichiamo */}
+        <section className="mb-16 py-16 bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
+          <h2 className="text-4xl font-bold text-center text-blue-300 mb-10">Il Nostro Vantaggio: Il Doppio Controllo AI</h2>
           <div className="flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0 md:space-x-8">
             <div className="md:w-1/2">
               <img 
                 src="/placeholder-workflow-image.png"
-                alt="Workflow in 3 passaggi: Pulizia, Normalizzazione, Certificazione Qualità Umana" 
+                alt="Workflow in 3 passaggi: Pulizia, Normalizzazione, Valutazione Qualità" 
                 className="rounded-lg shadow-xl w-full h-auto object-cover"
               />
               <p className="text-sm text-gray-500 mt-2 text-center">
-                (Illustrazione del processo: Input caotico &gt; Igiene Prompt &gt; Normalizzazione Tono &gt; Punteggio di Qualità Umana™)
+                (Il processo: Input caotico &gt; Igiene Prompt &gt; Normalizzazione Tono &gt; Valutazione Qualità Umana™)
               </p>
             </div>
-            <div className="md:w-1/2 space-y-8 text-left">
-              <div className="flex items-start space-x-4">
-                <span className="text-blue-400 text-3xl font-bold">1.</span>
-                <div>
-                  <h3 className="text-2xl font-semibold text-gray-200 mb-2">Incolla e Puliamo il Caos</h3>
-                  <p className="text-gray-400">Il tuo input (che sia una bozza da ChatGPT, un JSON o un testo con Markdown "sporco") viene immediatamente isolato. Il nostro motore AI esegue un'igiene del prompt avanzata, eliminando la formattazione inutile e normalizzando lo stile di scrittura.</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-4">
-                <span className="text-blue-400 text-3xl font-bold">2.</span>
-                <div>
-                  <h3 className="text-2xl font-semibold text-gray-200 mb-2">Normalizzazione del Tono Aziendale</h3>
-                  <p className="text-gray-400">La nostra AI riscrittura, ottimizzata per il B2B italiano, trasforma il testo "AI-ish" in una voce professionale, coerente e on-brand. Dici addio alla freddezza robotica e ottieni coerenza su larga scala.</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-4">
-                <span className="text-blue-400 text-3xl font-bold">3.</span>
-                <div>
-                  <h3 className="text-2xl font-semibold text-gray-200 mb-2">Certificazione: Punteggio di Qualità Umana™</h3>
-                  <p className="text-gray-400">Il nostro vantaggio competitivo: un secondo Agente AI ("LLM-as-a-Judge") valuta la coerenza, la persuasione e la conformità del testo finale, assegnando un punteggio e un report di qualità dettagliato. È il tuo senior editor virtuale.</p>
-                </div>
+            <div className="md:w-1/2 space-y-6 text-left">
+              {/* MODIFICA: Primo paragrafo per rimuovere i doppi asterischi */}
+              <p className="text-gray-300 text-lg">
+                Text Validator AI non si limita a pulire il testo. Implementiamo un innovativo <strong>Doppio Controllo AI</strong>:
+                una prima fase di <strong>Igiene del Prompt e Normalizzazione del Tono</strong> trasforma il tuo testo grezzo in un contenuto professionale e on-brand.
+                Successivamente, un secondo <strong>Agente AI (LLM-as-a-Judge)</strong> valuta oggettivamente la qualità del risultato, assegnando un <strong>Punteggio di Qualità Umana™</strong> per <strong>valutarne e garantirne l'eccellenza.</strong>
+              </p>
+              <p className="text-gray-300 text-lg">
+                Questo processo garantisce che ogni output sia non solo privo di errori e formattazione "AI-ish", ma anche efficace, coerente e indistinguibile da un testo scritto da un esperto umano.
+              </p>
+               <div className="text-center mt-8">
+                  <Link href="/pricing" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md">
+                      Scopri i Piani
+                  </Link>
               </div>
             </div>
           </div>

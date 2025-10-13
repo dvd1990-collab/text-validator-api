@@ -24,8 +24,26 @@ from jose import jwt, jwk # pip install python-jose
 # --- Aggiungi l'importazione per la verifica dei JWT RS256 ---
 from jose import jwt, jwk # pip install python-jose
 
-# --- INIZIO: NUOVI CONTROLLI VARIABILI D'AMBIENTE CRITICHE ---
+PLANS = {
+    "free": {
+        "limit": 10,
+        "allowed_profiles": ["Generico", "L'Umanizzatore"]
+    },
+    "starter": {
+        "limit": 30,
+        "allowed_profiles": "all" # Una stringa per indicare tutti i profili
+    },
+    "pro": {
+        "limit": 200,
+        "allowed_profiles": "all"
+    },
+    "admin": {
+        "limit": -1, # Illimitato
+        "allowed_profiles": "all"
+    }
+}
 
+# --- INIZIO: NUOVI CONTROLLI VARIABILI D'AMBIENTE CRITICHE ---
 # Variabili Clerk
 CLERK_WEBHOOK_SECRET = os.getenv("CLERK_WEBHOOK_SECRET")
 if not CLERK_WEBHOOK_SECRET:
@@ -76,11 +94,24 @@ class QualityReport(BaseModel):
 class UsageInfo(BaseModel):
     count: int
     limit: int
+    
+# === INIZIO BLOCCO DA AGGIUNGERE ===
+# 1. DEFINISCI IL NUOVO MODELLO DI RISPOSTA PER LO STATO UTENTE
+class UserStatusResponse(BaseModel):
+    usage: UsageInfo
+    tier: str
+    allowed_profiles: list[str] | str # Può essere una lista di stringhe o la stringa "all"
+# === FINE BLOCCO DA AGGIUNGERE ===
 
 class ValidationResponse(BaseModel):
     normalized_text: str
     quality_report: QualityReport
     usage: UsageInfo # Ora questa riga funzionerà
+    
+class UserStatusResponse(BaseModel):
+    usage: UsageInfo
+    tier: str
+    allowed_profiles: list[str] | str # Può essere una lista o la stringa "all"
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(title="Text Validator API", version="1.0.0")
@@ -110,6 +141,8 @@ async def read_health():
     return {"status": "ok"}
 
 
+# SOSTITUISCI L'INTERA FUNZIONE @app.post("/validate", ...) CON QUESTA
+
 @app.post("/validate", 
           response_model=ValidationResponse, 
           tags=["Core Logic"])
@@ -118,118 +151,105 @@ async def validate_text(request: Request, payload: TextInput, authorization: str
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Token di autenticazione mancante.")
 
-    # --- Renamed 'jwt_string' to avoid collision with jose.jwt library ---
     clerk_jwt_token_string = authorization.split(" ")[1]
     user_id = None
 
     try:
-        # Scarica le chiavi pubbliche di Clerk (in un'app di produzione, useresti una cache)
+        # ---- Logica di validazione del token JWT (invariata) ----
         jwks_response = requests.get(CLERK_JWKS_URL)
-        jwks_response.raise_for_status() # Lancia un'eccezione per errori HTTP
+        jwks_response.raise_for_status()
         jwks_data = jwks_response.json()
-
-        # Estrai l'header del JWT per trovare l'algoritmo e il 'kid' (Key ID)
         header = jwt.get_unverified_header(clerk_jwt_token_string)
-        
-        # Trova la chiave pubblica corrispondente dal JWKS usando il 'kid'
         public_key = None
         for key_data in jwks_data["keys"]:
             if key_data["kid"] == header["kid"]:
                 public_key = jwk.construct(key_data)
                 break
-        
         if not public_key:
-            raise Exception("Chiave pubblica corrispondente (kid) non trovata in Clerk JWKS. Controlla il CLERK_JWKS_URL e la configurazione di Clerk.")
-
-        # Verifica e decodifica il JWT usando la chiave pubblica
-        decoded_token = jwt.decode(
-            clerk_jwt_token_string, # Usa la variabile stringa del token
-            public_key,             # Usa l'oggetto chiave pubblica
-            algorithms=["RS256"],   # Specifica l'algoritmo di firma
-            audience=None,          # Clerk di solito non usa un audience specifico per questi token
-            options={"verify_signature": True, "verify_aud": False, "verify_iss": False} # Verifichiamo solo la firma
-        )
-        
-        user_id = decoded_token.get("sub") # Clerk usa 'sub' per l'ID utente
+            raise Exception("Chiave pubblica corrispondente (kid) non trovata in Clerk JWKS.")
+        decoded_token = jwt.decode(clerk_jwt_token_string, public_key, algorithms=["RS256"], options={"verify_signature": True, "verify_aud": False, "verify_iss": False})
+        user_id = decoded_token.get("sub")
         if not user_id:
-            raise Exception("ID utente (sub) non trovato nel token decodificato. Il token potrebbe essere malformato.")
-        
+            raise Exception("ID utente (sub) non trovato nel token decodificato.")
     except requests.exceptions.RequestException as e:
-        logging.error(f"!!! ERRORE SCARICAMENTO JWKS: Impossibile scaricare le chiavi JWKS da Clerk. Controlla CLERK_JWKS_URL o la connessione di rete. Errore: {e}")
-        raise HTTPException(status_code=503, detail=f"Errore di configurazione autenticazione: Impossibile raggiungere i servizi Clerk.")
+        logging.error(f"!!! ERRORE SCARICAMENTO JWKS: {e}")
+        raise HTTPException(status_code=503, detail="Errore di configurazione autenticazione: Impossibile raggiungere i servizi Clerk.")
     except Exception as e:
         logging.error(f"!!! ERRORE VALIDAZIONE TOKEN: {str(e)}")
         raise HTTPException(status_code=401, detail=f"La validazione del token è fallita: {str(e)}")
 
-    # --- 2. RECUPERO PROFILO "PAZIENTE" (La soluzione alla Race Condition) ---
+    # ---- Logica di recupero profilo "paziente" (invariata) ----
     profile = None
-    # Tentiamo di recuperare il profilo fino a 3 volte (per circa 1.5 secondi totali)
     for attempt in range(3):
         profile_res = supabase.table('profiles').select('*').eq('id', user_id).execute()
         if profile_res.data:
             profile = profile_res.data[0]
-            logging.info(f"Profilo trovato al tentativo #{attempt + 1} per utente {user_id}.")
-            break # Profilo trovato, usciamo dal ciclo
-        
-        logging.warning(f"Tentativo #{attempt + 1}: Profilo per utente {user_id} non ancora visibile, attendo 500ms...")
-        time.sleep(0.5) # Pausa di mezzo secondo
-
+            logging.info(f"Profilo trovato per utente {user_id}.")
+            break
+        time.sleep(0.5)
     if not profile:
-        logging.critical(f"CRITICO: Profilo utente {user_id} non trovato dopo multipli tentativi. Il trigger del database potrebbe essere fallito.")
-        raise HTTPException(status_code=500, detail="CRITICO: Profilo utente non trovato dopo multipli tentativi. Contatta il supporto.")
+        logging.critical(f"CRITICO: Profilo utente {user_id} non trovato.")
+        raise HTTPException(status_code=500, detail="CRITICO: Profilo utente non trovato. Contatta il supporto.")
 
-    # --- 3. IL RESTO DELLA FUNZIONE (Logica Limiti e AI) ---
-    DAILY_LIMIT = 10
-    if profile.get('role') != 'admin':
+    # --- INIZIO NUOVA LOGICA: GESTIONE PIANI E LIMITI ---
+    user_tier_name = profile.get('subscription_tier', 'free')
+    user_role = profile.get('role', 'user')
+
+    # Un admin ha sempre i privilegi massimi
+    plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
+
+    # 1. Verifica se il profilo AI richiesto è consentito
+    if plan["allowed_profiles"] != "all" and payload.profile_name not in plan["allowed_profiles"]:
+        raise HTTPException(
+            status_code=403, 
+            detail=f"Il profilo '{payload.profile_name}' non è incluso nel tuo piano attuale. Esegui l'upgrade per sbloccarlo."
+        )
+
+    # 2. Verifica il limite di chiamate
+    daily_limit = plan["limit"]
+    current_count = profile.get('usage_count', 0)
+
+    if daily_limit != -1: # Se l'utente non ha un limite illimitato
         today = str(date.today())
         last_used = profile.get('last_used_date')
-        current_count = profile.get('usage_count', 0)
 
         if last_used != today:
             current_count = 0
+            # Resettiamo il contatore e la data per il nuovo giorno
             supabase.table('profiles').update({'last_used_date': today, 'usage_count': 0}).eq('id', user_id).execute()
 
-        if current_count >= DAILY_LIMIT:
-            raise HTTPException(status_code=429, detail=f"Hai superato il limite giornaliero di {DAILY_LIMIT} chiamate.")
-    
-    # --- FASE 1: Normalizzazione del testo ---
+        if current_count >= daily_limit:
+            raise HTTPException(
+                status_code=429, 
+                detail=f"Hai superato il limite giornaliero di {daily_limit} chiamate per il tuo piano."
+            )
+    # --- FINE NUOVA LOGICA ---
+
+    # --- Logica AI (invariata) ---
     try:
         normalized_text = await ai_core.normalize_text(payload.text, profile_name=payload.profile_name)
         if not isinstance(normalized_text, str):
             raise HTTPException(status_code=500, detail="Errore interno: La Fase 1 non ha restituito testo valido.")
-    except Exception as e:
-        error_detail = f"Errore imprevisto durante la Fase 1: {str(e)}"
-        logging.error(f"Errore AI Fase 1: {error_detail}")
-        raise HTTPException(status_code=500, detail=error_detail)
-
-    # --- FASE 2: Calcolo del punteggio di qualità ---
-    try:
-        quality_report_data = await ai_core.get_quality_score(
-            original_text=payload.text,
-            normalized_text=normalized_text,
-            profile_name=payload.profile_name
-        )
+        quality_report_data = await ai_core.get_quality_score(original_text=payload.text, normalized_text=normalized_text, profile_name=payload.profile_name)
         if "error" in quality_report_data:
-            logging.error(f"Errore LLM nella Fase 2: {quality_report_data.get('details', 'Dettagli non disponibili')}")
             raise HTTPException(status_code=503, detail=quality_report_data.get("details", "Errore LLM."))
-        
         quality_report = QualityReport(**quality_report_data)
     except Exception as e:
-        error_detail = f"Errore imprevisto durante la Fase 2: {str(e)}"
-        logging.error(f"Errore AI Fase 2: {error_detail}")
+        error_detail = f"Errore imprevisto durante l'elaborazione AI: {str(e)}"
+        logging.error(f"Errore AI: {error_detail}")
         raise HTTPException(status_code=500, detail=error_detail)
 
-    # --- AGGIORNAMENTO CONTEGGIO ---
-    new_count = profile.get('usage_count', 0)
-    if profile.get('role') != 'admin':
+    # --- AGGIORNAMENTO CONTEGGIO (Modificato) ---
+    new_count = current_count
+    if daily_limit != -1: # Incrementiamo solo se l'utente non è admin
         new_count += 1
         supabase.table('profiles').update({'usage_count': new_count}).eq('id', user_id).execute()
 
-    # --- Costruzione e invio della risposta finale ---
+    # --- Costruzione e invio della risposta finale (Modificato) ---
     return ValidationResponse(
         normalized_text=normalized_text.strip(),
         quality_report=quality_report,
-        usage=UsageInfo(count=new_count, limit=DAILY_LIMIT if profile.get('role') != 'admin' else -1)
+        usage=UsageInfo(count=new_count, limit=daily_limit)
     )
 
 @app.post("/webhooks/new-user", include_in_schema=False) # Nascosto dalla documentazione pubblica
@@ -369,7 +389,9 @@ async def clerk_webhook_handler(request: Request, response: Response):
         return {"message": f"Event type {event_type} acknowledged, no action taken."}
 
 @app.get("/user-status", response_model=UsageInfo, tags=["User Management"])
-@limiter.limit("50/minute") # Limite più generoso per le chiamate di stato
+@limiter.limit("50/minute")
+@app.get("/user-status", response_model=UserStatusResponse, tags=["User Management"]) # <-- Usa il nuovo modello
+@limiter.limit("50/minute")
 async def get_user_status(request: Request, authorization: str = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Token di autenticazione mancante.")
@@ -378,7 +400,7 @@ async def get_user_status(request: Request, authorization: str = Header(None)):
     user_id = None
 
     try:
-        # Re-using JWT verification logic
+        # Logica di validazione token... (invariata)
         jwks_response = requests.get(CLERK_JWKS_URL)
         jwks_response.raise_for_status()
         jwks_data = jwks_response.json()
@@ -390,45 +412,32 @@ async def get_user_status(request: Request, authorization: str = Header(None)):
                 break
         if not public_key:
             raise Exception("Chiave pubblica corrispondente (kid) non trovata in Clerk JWKS.")
-        decoded_token = jwt.decode(
-            clerk_jwt_token_string,
-            public_key,
-            algorithms=["RS256"],
-            audience=None,
-            options={"verify_signature": True, "verify_aud": False, "verify_iss": False}
-        )
+        decoded_token = jwt.decode(clerk_jwt_token_string, public_key, algorithms=["RS256"], options={"verify_signature": True, "verify_aud": False, "verify_iss": False})
         user_id = decoded_token.get("sub")
         if not user_id:
-            raise Exception("ID utente (sub) non trovato nel token decodificato.")
+            raise Exception("ID utente (sub) non trovato nel token.")
             
-    except requests.exceptions.RequestException as e:
-        logging.error(f"!!! ERRORE SCARICAMENTO JWKS per /user-status: {e}")
-        raise HTTPException(status_code=503, detail=f"Errore di configurazione autenticazione: Impossibile raggiungere i servizi Clerk.")
     except Exception as e:
-        logging.error(f"!!! ERRORE VALIDAZIONE TOKEN per /user-status: {str(e)}")
-        raise HTTPException(status_code=401, detail=f"La validazione del token è fallita: {str(e)}")
+        raise HTTPException(status_code=401, detail=f"Validazione token fallita: {str(e)}")
 
-    # --- Recupero Profilo e Limiti ---
-    profile = None
-    # Non facciamo la logica di "pazienza" qui, se il profilo non c'è, è un problema.
+    # Recupero Profilo... (invariato)
     profile_res = supabase.table('profiles').select('*').eq('id', user_id).execute()
-    if profile_res.data:
-        profile = profile_res.data[0]
+    if not profile_res.data:
+        raise HTTPException(status_code=500, detail="Profilo utente non trovato.")
+    
+    profile = profile_res.data[0]
 
-    if not profile:
-        logging.critical(f"CRITICO: Profilo utente {user_id} non trovato per /user-status.")
-        raise HTTPException(status_code=500, detail="CRITICO: Profilo utente non trovato. Contatta il supporto.")
+    user_tier_name = profile.get('subscription_tier', 'free')
+    user_role = profile.get('role', 'user')
 
-    DAILY_LIMIT = 10 # Deve essere consistente con validate_text
-
-    current_count = profile.get('usage_count', 0)
-    # Calcola il limite e il conteggio basato sul ruolo admin
-    if profile.get('role') == 'admin':
-        return UsageInfo(count=current_count, limit=-1) # -1 per illimitato
-    else:
-        # Se è un nuovo giorno, il contatore viene resettato nella validate_text,
-        # ma qui mostriamo lo stato attuale prima di ogni validazione
-        return UsageInfo(count=current_count, limit=DAILY_LIMIT)
+    plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
+    
+    # Usa il nuovo modello per costruire la risposta
+    return UserStatusResponse(
+        usage=UsageInfo(count=profile.get('usage_count', 0), limit=plan["limit"]),
+        tier=user_tier_name if user_role != 'admin' else 'admin',
+        allowed_profiles=plan["allowed_profiles"]
+    )
 
 if __name__ == "__main__":
     # Legge la porta dalla variabile d'ambiente PORT fornita da Cloud Run

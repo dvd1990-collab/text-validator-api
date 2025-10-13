@@ -1,31 +1,24 @@
 // src/app/layout.tsx
-// src/app/layout.tsx
-import type { Metadata } from "next";
-import "./globals.css";
-// --- NUOVA IMPORTAZIONE DI CLERK ---
 import { ClerkProvider } from "@clerk/nextjs";
-import Navbar from '@/components/Navbar'; 
+import Navbar from '@/components/Navbar';
+import { UsageProvider } from '@/context/UsageContext'; // <-- IMPORTA IL PROVIDER
+import './globals.css';
 
-export const metadata: Metadata = {
-  title: "Text Validator",
-  description: "Pulisci, normalizza e valida la qualità dei tuoi testi AI.",
-};
+// ... metadata ...
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`antialiased bg-gray-900 text-white`}> {/* Aggiunto bg-gray-900 text-white al body */}
-          <Navbar /> {/* <--- Includi la Navbar qui */}
-          <div className="pt-24"> {/* <--- Aggiunto padding-top per la Navbar fissa */}
-            {children}
-          </div>
-        </body>
-      </html>
+      <UsageProvider> {/* <-- AVVOLGI L'APP CON IL PROVIDER */}
+        <html lang="en">
+          <body className={`antialiased bg-gray-900 text-white`}>
+            <Navbar />
+            <div className="pt-24">
+              {children}
+            </div>
+          </body>
+        </html>
+      </UsageProvider>
     </ClerkProvider>
   );
 }
