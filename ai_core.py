@@ -11,7 +11,11 @@ if not API_KEY:
     raise ValueError("GOOGLE_API_KEY non trovata nel file .env")
 
 genai.configure(api_key=API_KEY)
-MODEL_NAME = "models/gemini-flash-lite-latest"
+# Modello per task veloci ed economici (Validator e Interpreter per piano Free)
+VALIDATOR_MODEL_NAME = "models/gemini-flash-lite-latest"
+
+# Modello per task complessi e di alta qualità (Interpreter per piani a pagamento)
+INTERPRETER_MODEL_NAME = "models/gemini-2.5-flash"
 
 # --- DEFINIZIONE DEI PROMPT PER I DIVERSI PROFILI (ESAUSTIVI E PROTETTI) ---
 # Usiamo un dizionario per organizzare i prompt per profilo e fase.
@@ -729,13 +733,12 @@ INTERPRETER_PROMPT_TEMPLATES = {
 			}
 }
 
-async def normalize_text(raw_text: str, profile_name: str = "Generico") -> str:
+async def normalize_text(raw_text: str, profile_name: str, model_name: str) -> str: # AGGIUNTO model_name
     """
-    Esegue la Fase 1 del workflow AI: pulizia del Markdown e normalizzazione del tono,
-    in base al profilo selezionato.
+    Esegue la Fase 1 del workflow VALIDATOR.
     """
-    print(f"--- FASE 1 ({profile_name}): Inizio Normalizzazione (lunghezza: {len(raw_text)} caratteri) ---")
-    model = genai.GenerativeModel(MODEL_NAME)
+    print(f"--- VALIDATOR FASE 1 ({profile_name}) usando {model_name} ---")
+    model = genai.GenerativeModel(model_name)
     
     prompt = PROMPT_TEMPLATES.get(profile_name, PROMPT_TEMPLATES["Generico"])["normalization"]
     formatted_prompt = prompt.format(raw_text=raw_text)
@@ -749,13 +752,12 @@ async def normalize_text(raw_text: str, profile_name: str = "Generico") -> str:
         return f"Errore durante la Fase 1: {e}"
 
 
-async def get_quality_score(original_text: str, normalized_text: str, profile_name: str = "Generico") -> dict:
+async def get_quality_score(original_text: str, normalized_text: str, profile_name: str, model_name: str) -> dict: # AGGIUNTO model_name
     """
-    Fase 2: Calcolo del punteggio di qualità con parsing JSON robusto,
-    in base al profilo selezionato.
+    Fase 2 del workflow VALIDATOR.
     """
-    print(f"--- FASE 2 ({profile_name}): Inizio Calcolo Punteggio ---")
-    model = genai.GenerativeModel(MODEL_NAME)
+    print(f"--- VALIDATOR FASE 2 ({profile_name}) usando {model_name} ---")
+    model = genai.GenerativeModel(model_name) # USA IL MODELLO PASSATO
     
     prompt = PROMPT_TEMPLATES.get(profile_name, PROMPT_TEMPLATES["Generico"])["quality_score"]
     formatted_prompt = prompt.format(original_text=original_text, normalized_text=normalized_text)
@@ -779,13 +781,12 @@ async def get_quality_score(original_text: str, normalized_text: str, profile_na
         print(f"!!! ERRORE CRITICO IN FASE 2 ({profile_name}): {e}")
         return {"error": "Impossibile calcolare il punteggio di qualità.", "details": str(e)}
         
-async def interpret_text(raw_text: str, profile_name: str) -> str:
+async def interpret_text(raw_text: str, profile_name: str, model_name: str) -> str: # AGGIUNTO model_name
     """
-    Esegue la Fase 1 del workflow INTERPRETER: analisi e sintesi strutturata del testo,
-    in base al profilo selezionato.
+    Esegue la Fase 1 del workflow INTERPRETER.
     """
-    print(f"--- INTERPRETER FASE 1 ({profile_name}): Inizio Interpretazione ---")
-    model = genai.GenerativeModel(MODEL_NAME)
+    print(f"--- INTERPRETER FASE 1 ({profile_name}) usando {model_name} ---")
+    model = genai.GenerativeModel(model_name) # USA IL MODELLO PASSATO
     
     # Cerca il prompt nel nuovo dizionario INTERPRETER_PROMPT_TEMPLATES
     prompt_template = INTERPRETER_PROMPT_TEMPLATES.get(profile_name)
@@ -803,12 +804,12 @@ async def interpret_text(raw_text: str, profile_name: str) -> str:
         raise RuntimeError(f"Errore durante la Fase 1 di interpretazione: {e}")
 
 
-async def get_interpreter_quality_score(original_text: str, interpreted_text: str, profile_name: str) -> dict:
+async def get_interpreter_quality_score(original_text: str, interpreted_text: str, profile_name: str, model_name: str) -> dict: # AGGIUNTO model_name
     """
-    Fase 2: Calcolo del punteggio di qualità per l'output dell'INTERPRETER.
+    Fase 2 del workflow INTERPRETER.
     """
-    print(f"--- INTERPRETER FASE 2 ({profile_name}): Inizio Calcolo Punteggio Qualità ---")
-    model = genai.GenerativeModel(MODEL_NAME)
+    print(f"--- INTERPRETER FASE 2 ({profile_name}) usando {model_name} ---")
+    model = genai.GenerativeModel(model_name) # USA IL MODELLO PASSATO
     
     prompt_template = INTERPRETER_PROMPT_TEMPLATES.get(profile_name)
     if not prompt_template or "quality_score" not in prompt_template:

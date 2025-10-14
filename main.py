@@ -222,7 +222,7 @@ async def validate_text(request: Request, payload: TextInput, authorization: str
         )
     # === FINE BLOCCO DA AGGIUNGERE ===
     validator_plan = plan["validator"]
-    
+    model_to_use = ai_core.VALIDATOR_MODEL_NAME
     # 1. Verifica profilo consentito
     if validator_plan["allowed_profiles"] != "all" and payload.profile_name not in validator_plan["allowed_profiles"]:
         raise HTTPException(status_code=403, detail=f"Il profilo Validator '{payload.profile_name}' non è incluso nel tuo piano.")
@@ -240,11 +240,11 @@ async def validate_text(request: Request, payload: TextInput, authorization: str
 
     # --- ELABORAZIONE AI ---
     try:
-        normalized_text = await ai_core.normalize_text(payload.text, profile_name=payload.profile_name)
+        normalized_text = await ai_core.normalize_text(payload.text, profile_name=payload.profile_name, model_name=model_to_use)
         
         quality_report_obj = None
         if validator_plan["quality_check"]:
-            quality_report_data = await ai_core.get_quality_score(original_text=payload.text, normalized_text=normalized_text, profile_name=payload.profile_name)
+            quality_report_data = await ai_core.get_quality_score(original_text=payload.text, normalized_text=normalized_text, profile_name=payload.profile_name, model_name=model_to_use)
             if "error" not in quality_report_data and "human_quality_score" in quality_report_data:
                 score = quality_report_data.get("human_quality_score", 0)
                 quality_report_data["human_quality_score"] = round(score)
@@ -310,7 +310,10 @@ async def interpret_document(request: Request, payload: TextInput, authorization
         )
     # === FINE BLOCCO DA AGGIUNGERE ===
     interpreter_plan = plan["interpreter"]
-
+    if user_tier_name == 'free':
+        model_to_use = ai_core.VALIDATOR_MODEL_NAME # Modello economico
+    else:
+        model_to_use = ai_core.INTERPRETER_MODEL_NAME # Modello potente
     # 1. Verifica profilo consentito
     if interpreter_plan["allowed_profiles"] != "all" and payload.profile_name not in interpreter_plan["allowed_profiles"]:
         raise HTTPException(status_code=403, detail=f"Il profilo Interpreter '{payload.profile_name}' non è incluso nel tuo piano.")
@@ -328,11 +331,11 @@ async def interpret_document(request: Request, payload: TextInput, authorization
 
     # --- ELABORAZIONE AI con le nuove funzioni di ai_core ---
     try:
-        interpreted_text = await ai_core.interpret_text(payload.text, profile_name=payload.profile_name)
+        interpreted_text = await ai_core.interpret_text(payload.text, profile_name=payload.profile_name, model_name=model_to_use)
         
         quality_report_obj = None
         if interpreter_plan["quality_check"]:
-            quality_report_data = await ai_core.get_interpreter_quality_score(original_text=payload.text, interpreted_text=interpreted_text, profile_name=payload.profile_name)
+            quality_report_data = await ai_core.get_interpreter_quality_score(original_text=payload.text, interpreted_text=interpreted_text, profile_name=payload.profile_name, model_name=model_to_use)
             if "error" not in quality_report_data and "human_quality_score" in quality_report_data:
                 # ARROTONDA IL PUNTEGGIO ALL'INTERO PIÙ VICINO
                 score = quality_report_data.get("human_quality_score", 0)
