@@ -301,7 +301,7 @@ export default function UseCasesPage() {
 
               {/* Report di Qualità */}
               <div className="mt-8 p-6 rounded-xl bg-gray-900 border border-gray-700 shadow-md">
-                <h3 className="text-2xl font-semibold text-green-400 mb-4 text-center">Controllo di Qualità Esperto</h3>
+                <h3 className="text-2xl font-semibold text-green-400 mb-4 text-center">Controllo di Qualità AI²™</h3>
                 <div className="flex items-center justify-center text-center mb-4">
                   <p className="text-6xl font-bold text-green-400">{selectedUseCase.qualityScore}</p>
                   <p className="ml-2 text-2xl text-gray-400">/ 100</p>

@@ -207,7 +207,7 @@ export default function HomePage() {
 
           {userTier !== 'free' && qualityReport && (
   		    <div className="mt-8 rounded-xl bg-gray-800 p-6 border border-gray-700 shadow-xl">
-			  <h2 className="text-2xl font-semibold text-blue-400">Controllo di Qualità Esperto</h2>
+			  <h2 className="text-2xl font-semibold text-blue-400">Report di Qualità AI²™</h2>
 			  <div className="mt-4 flex items-center justify-center text-center">
 			    <p className="text-6xl font-bold text-green-400">{qualityReport.human_quality_score}</p>
 			    <p className="ml-2 text-2xl text-gray-400">/ 100</p>

@@ -36,7 +36,7 @@ export default function PricingPage() {
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 5.000 caratteri</strong> per input</span></li>
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Validator:</strong> 2 Profili Base</li>
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Interpreter:</strong> 1 Profilo Base <span className="text-xs text-gray-500">(con Motore Standard)</span></span></li>
-                            <li className="flex items-start"><span className="text-red-500 mr-2">✗</span>Senza Controllo di Qualità Esperto</li>
+                            <li className="flex items-start"><span className="text-red-500 mr-2">✗</span>Senza Controllo di Qualità AI²™</li>
                         </ul>
                     </div>
                     <button onClick={handleCtaClick} className="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-full transition-all duration-300">
@@ -55,7 +55,7 @@ export default function PricingPage() {
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 50.000 caratteri</strong> per input</span></li>
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Tutti i Profili</strong><span className="ml-1">Validator</span></li>
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Tutti i Profili</strong><span className="ml-1">Interpreter <span className="text-xs text-blue-200">(con Motore Avanzato)</span></span></span></li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Con</strong><span className="ml-1">Controllo di Qualità Esperto</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Con</strong><span className="ml-1">Controllo di Qualità AI²™</span></li>
                         </ul>
                     </div>
                     <button onClick={handleCtaClick} className="w-full bg-white text-blue-700 font-bold py-3 px-6 rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300">

@@ -56,7 +56,7 @@ export default function TextValidatorAIPage() {
             </div>
             <div className="md:w-1/2 space-y-6 text-left">
               <p className="text-gray-300 text-lg">
-                Implementiamo un innovativo <strong>Doppio Controllo AI</strong>: una prima fase di <strong>Igiene e Normalizzazione</strong> trasforma il tuo testo grezzo in un contenuto professionale. Successivamente, un secondo <strong>Agente AI (LLM-as-a-Judge)</strong> valuta oggettivamente la qualità del risultato, assegnando un <strong>Punteggio di Qualità Esperto</strong> per garantirne l'eccellenza.
+                Implementiamo un innovativo <strong>Doppio Controllo AI</strong>: una prima fase di <strong>Igiene e Normalizzazione</strong> trasforma il tuo testo grezzo in un contenuto professionale. Successivamente, un secondo <strong>Agente AI (LLM-as-a-Judge)</strong> valuta oggettivamente la qualità del risultato, assegnando un <strong>Punteggio di Qualità AI²</strong> per garantirne l'eccellenza.
               </p>
                <div className="text-center mt-8">
                   <Link href="/pricing" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md">

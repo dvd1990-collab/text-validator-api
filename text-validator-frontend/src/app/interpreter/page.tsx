@@ -191,7 +191,7 @@ export default function InterpreterPage() {
           {qualityReport && (
 		    <div className="mt-8 max-w-4xl mx-auto rounded-xl bg-gray-800 p-6 border border-gray-700 shadow-xl">
 			  <h2 className="text-2xl font-semibold text-green-400 text-center mb-4">
-			    Controllo di Qualità Esperto
+			    Report di Qualità AI²™
 			  </h2>
 			  <div className="flex items-center justify-center text-center mb-4">
 			    <p className="text-6xl font-bold text-green-400">{qualityReport.human_quality_score}</p>
