@@ -27,6 +27,7 @@ from jose import jwt, jwk # pip install python-jose
 PLANS = {
     "free": {
         "shared_limit": 10,
+        "max_input_length": 5000, # Limite di 5,000 caratteri per il piano Free
         "validator": {
             "allowed_profiles": ["Generico", "L'Umanizzatore"],
             "quality_check": False
@@ -38,6 +39,7 @@ PLANS = {
     },
     "starter": {
         "shared_limit": 30,
+        "max_input_length": 50000, # Limite molto più alto
         "validator": {
             "allowed_profiles": "all",
             "quality_check": True
@@ -49,6 +51,7 @@ PLANS = {
     },
     "pro": {
         "shared_limit": 200,
+        "max_input_length": 100000, # Limite ancora più alto
         "validator": {
             "allowed_profiles": "all",
             "quality_check": True
@@ -60,6 +63,7 @@ PLANS = {
     },
     "admin": {
         "shared_limit": -1, # Illimitato
+        "max_input_length": None, # Nessun limite per l'admin
         "validator": {
             "allowed_profiles": "all",
             "quality_check": True
@@ -208,7 +212,15 @@ async def validate_text(request: Request, payload: TextInput, authorization: str
     user_tier_name = profile.get('subscription_tier', 'free')
     user_role = profile.get('role', 'user')
     plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
-
+    # === INIZIO BLOCCO DA AGGIUNGERE ===
+    # 0. Verifica lunghezza massima dell'input
+    max_length = plan.get("max_input_length")
+    if max_length is not None and len(payload.text) > max_length:
+        raise HTTPException(
+            status_code=413, # 413 Payload Too Large
+            detail=f"Il testo inserito ({len(payload.text)} caratteri) supera il limite di {max_length} caratteri consentito per il tuo piano. Esegui l'upgrade per analizzare documenti più lunghi."
+        )
+    # === FINE BLOCCO DA AGGIUNGERE ===
     validator_plan = plan["validator"]
     
     # 1. Verifica profilo consentito
@@ -288,7 +300,15 @@ async def interpret_document(request: Request, payload: TextInput, authorization
     user_tier_name = profile.get('subscription_tier', 'free')
     user_role = profile.get('role', 'user')
     plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
-
+    # === INIZIO BLOCCO DA AGGIUNGERE ===
+    # 0. Verifica lunghezza massima dell'input
+    max_length = plan.get("max_input_length")
+    if max_length is not None and len(payload.text) > max_length:
+        raise HTTPException(
+            status_code=413, # 413 Payload Too Large
+            detail=f"Il documento inserito ({len(payload.text)} caratteri) supera il limite di {max_length} caratteri consentito per il tuo piano. Esegui l'upgrade per analizzare documenti più lunghi."
+        )
+    # === FINE BLOCCO DA AGGIUNGERE ===
     interpreter_plan = plan["interpreter"]
 
     # 1. Verifica profilo consentito

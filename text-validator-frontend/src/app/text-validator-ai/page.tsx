@@ -7,28 +7,28 @@ export default function TextValidatorAIPage() {
   const validatorProfiles = [
     { name: "Generico", description: "Pulisce il markup e normalizza il tono per una comunicazione aziendale chiara e autorevole." },
     { name: "L'Umanizzatore", description: "Rende i testi generati dall'AI naturali, fluidi e autenticamente umani, rimuovendo ogni traccia di robotismo." },
-    { name: "PM - Interpretazione Trascrizioni", description: "Estrae azioni, decisioni e responsabili da riunioni e note tecniche, strutturando il testo per la chiarezza progettuale." },
-    { name: "Copywriter Persuasivo", description: "Potenzia i testi di marketing evidenziando i benefici per il cliente con un tono energico e orientato alla conversione." },
-    { name: "Revisore Legale/Regolatorio", description: "Riformula testi per rimuovere ambiguità, garantendo precisione linguistica e conformità formale." },
-    { name: "Scrittore di Newsletter", description: "Crea newsletter B2B coinvolgenti, strutturate con ganci forti e chiare Call to Action." },
-    { name: "Social Media Manager B2B", description: "Adatta i contenuti per post su piattaforme professionali (es. LinkedIn), rendendoli concisi e ottimizzati per l'engagement." },
-    { name: "Comunicatore di Crisi PR", description: "Trasforma i messaggi in comunicazioni ufficiali di crisi: calme, empatiche e autorevoli." },
-    { name: "Traduttore Tecnico IT", description: "Semplifica concetti tecnici complessi in linguaggio comprensibile per un pubblico non specializzato." },
-    { name: "Specialista Comunicazioni HR", description: "Adatta le comunicazioni interne ai dipendenti, garantendo un tono professionale, empatico e inclusivo." },
-    { name: "Ottimizzatore Email di Vendita", description: "Riscrive email a freddo B2B per massimizzare il tasso di risposta, con personalizzazione e Call to Action a basso attrito." },
+    { name: "PM - Interpretazione Trascrizioni", description: "Estrae azioni, decisioni e responsabili da riunioni e note tecniche." },
+    { name: "Copywriter Persuasivo", description: "Potenzia i testi di marketing evidenziando i benefici per il cliente." },
+    { name: "Revisore Legale/Regolatorio", description: "Riformula testi per rimuovere ambiguità, garantendo precisione linguistica." },
+    { name: "Scrittore di Newsletter", description: "Crea newsletter B2B coinvolgenti con ganci forti e chiare Call to Action." },
+    { name: "Social Media Manager B2B", description: "Adatta i contenuti per post LinkedIn, rendendoli concisi e ottimizzati." },
+    { name: "Comunicatore di Crisi PR", description: "Trasforma messaggi in comunicazioni di crisi: calme, empatiche e autorevoli." },
+    { name: "Traduttore Tecnico IT", description: "Semplifica concetti tecnici complessi per un pubblico non specializzato." },
+    { name: "Specialista Comunicazioni HR", description: "Adatta le comunicazioni interne ai dipendenti con un tono professionale ed empatico." },
+    { name: "Ottimizzatore Email di Vendita", description: "Riscrive email a freddo B2B per massimizzare il tasso di risposta." },
   ];
 
   const interpreterProfiles = [
-    { name: "Analista Contratto di Vendita", description: "Estrae clausole critiche, scadenze e rischi finanziari dai tuoi contratti di vendita." },
-    { name: "Revisore Contratto di Acquisto", description: "Valuta le condizioni di acquisto, i termini di consegna e le clausole di IP per i contratti con i fornitori." },
-    { name: "Estrattore P&L Aziendale", description: "Calcola i margini di profitto chiave (lordo, operativo, netto) dal Conto Economico." },
-    { name: "Analista Bilancio Aziendale", description: "Analizza i bilanci per la solvibilità, calcolando i rapporti di liquidità e leva finanziaria." },
-    { name: "Sintesi Legale Breve", description: "Sintetizza sentenze e decisioni legali in formato standardizzato 'Case Brief' per lo studio." },
-    { name: "Revisore Polizza Assicurativa", description: "Identifica massimali, franchigie, esclusioni e clausole potenzialmente vessatorie nelle polizze." },
-    { name: "Verificatore Fatture/Bollette", description: "Estrae i dati contabili essenziali dalle fatture (numero, PO, data scadenza, totali) per l'automazione." },
-    { name: "Estrattore Dati Fatti", description: "Estrae fatti, date, entità e luoghi da documenti forensi o dichiarazioni per creare una timeline oggettiva." },
-    { name: "Analista Debiti/Liquidità", description: "Calcola il capitale circolante, analizza i rapporti di liquidità (Quick Ratio) e identifica i covenant di debito." },
-    { name: "Spiega in Parole Semplici", description: "Trasforma documenti legali e finanziari complessi in linguaggio manageriale chiaro e conciso." },
+    { name: "Analista Contratto di Vendita", description: "Estrae clausole critiche, scadenze e rischi dai contratti di vendita." },
+    { name: "Revisore Contratto di Acquisto", description: "Valuta le condizioni di acquisto e i termini di consegna con i fornitori." },
+    { name: "Estrattore P&L Aziendale", description: "Calcola i margini di profitto chiave dal Conto Economico." },
+    { name: "Analista Bilancio Aziendale", description: "Analizza i bilanci per la solvibilità e i rapporti di liquidità." },
+    { name: "Sintesi Legale Breve", description: "Sintetizza sentenze e decisioni legali in formato 'Case Brief'." },
+    { name: "Revisore Polizza Assicurativa", description: "Identifica massimali, esclusioni e clausole vessatorie nelle polizze." },
+    { name: "Verificatore Fatture/Bollette", description: "Estrae dati contabili essenziali dalle fatture per l'automazione." },
+    { name: "Estrattore Dati Fatti", description: "Estrae fatti, date ed entità da documenti per creare timeline oggettive." },
+    { name: "Analista Debiti/Liquidità", description: "Calcola il capitale circolante e analizza i rischi di liquidità." },
+    { name: "Spiega in Parole Semplici", description: "Trasforma documenti complessi in linguaggio manageriale chiaro." },
   ];
 
   return (
@@ -42,6 +42,67 @@ export default function TextValidatorAIPage() {
             Text Validator AI non è solo uno strumento, ma una suite di soluzioni per garantire qualità, chiarezza e accuratezza in ogni testo.
           </p>
         </header>
+
+        {/* --- SEZIONE REINSERITA: Come Funziona --- */}
+        <section className="mb-16 py-16">
+          <h2 className="text-4xl font-bold text-center text-blue-300 mb-12">Come Funziona il Doppio Controllo AI</h2>
+          <div className="flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0 md:space-x-8">
+            <div className="md:w-1/2">
+              <img 
+                src="/placeholder-workflow-image.png"
+                alt="Workflow in 3 passaggi: Pulizia, Normalizzazione, Valutazione Qualità" 
+                className="rounded-lg shadow-xl w-full h-auto object-cover"
+              />
+            </div>
+            <div className="md:w-1/2 space-y-6 text-left">
+              <p className="text-gray-300 text-lg">
+                Implementiamo un innovativo <strong>Doppio Controllo AI</strong>: una prima fase di <strong>Igiene e Normalizzazione</strong> trasforma il tuo testo grezzo in un contenuto professionale. Successivamente, un secondo <strong>Agente AI (LLM-as-a-Judge)</strong> valuta oggettivamente la qualità del risultato, assegnando un <strong>Punteggio di Qualità Esperto</strong> per garantirne l'eccellenza.
+              </p>
+               <div className="text-center mt-8">
+                  <Link href="/pricing" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md">
+                      Scopri i Piani
+                  </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* --- SEZIONE REINSERITA: Funzionalità Business --- */}
+        <section className="mb-16 py-16">
+		  <h2 className="text-4xl font-bold text-center text-blue-400 mb-12">Le Funzionalità che Trasformano il Tuo Business</h2>
+		  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+			{/* Blocco 1: Affidabilità e Conformità */}
+			<div className="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
+			  <h3 className="text-3xl font-semibold text-blue-300 mb-4">Zero Rischi: Garanzia di Compliance e Brand Safety.</h3>
+			  <p className="text-gray-400 mb-6">Garantiamo che l'output sia formalmente corretto, mitigando il rischio di prompt injection e mantenendo la coerenza del tono per comunicazioni HR o di crisi.</p>
+			  <ul className="list-disc list-inside space-y-2 text-gray-300 pl-5">
+				<li><strong>No-Storage Policy:</strong> Massima conformità GDPR.</li>
+				<li><strong>Robustezza:</strong> Filtraggio di input malevoli.</li>
+			  </ul>
+			  <img 
+				src="/placeholder-compliance-image.png"
+				alt="Illustrazione di sicurezza e compliance GDPR" 
+				className="mt-8 rounded-lg shadow-md w-full h-48 object-cover"
+			  />
+			</div>
+
+			{/* Blocco 2: Efficienza e Persuasione */}
+			<div className="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
+			  <h3 className="text-3xl font-semibold text-blue-300 mb-4">Massimizza la Conversione, Non la Revisione Manuale.</h3>
+			  <p className="text-gray-400 mb-6">La nostra AI è specializzata nell'infondere empatia e coerenza del brand nei tuoi testi, dalle newsletter alle email di vendita.</p>
+			  <ul className="list-disc list-inside space-y-2 text-gray-300 pl-5">
+				<li><strong>Riduzione Editing:</strong> Riduci il tempo di post-editing.</li>
+				<li><strong>Coerenza del Brand:</strong> Mantiene il tuo Tone of Voice.</li>
+				<li><strong>Output Persuasivo:</strong> Genera bozze ottimizzate e coinvolgenti.</li>
+			  </ul>
+			  <img 
+				src="/placeholder-persuasion-image.png"
+				alt="Illustrazione di copywriting persuasivo ed efficienza" 
+				className="mt-8 rounded-lg shadow-md w-full h-48 object-cover"
+			  />
+			</div>
+		  </div>
+		</section>
 
         {/* Sezione Validator */}
         <section className="py-16">
