@@ -4,18 +4,31 @@
 import Link from 'next/link';
 
 export default function TextValidatorAIPage() {
-  const profileDescriptions = [
+  const validatorProfiles = [
     { name: "Generico", description: "Pulisce il markup e normalizza il tono per una comunicazione aziendale chiara e autorevole." },
+    { name: "L'Umanizzatore", description: "Rende i testi generati dall'AI naturali, fluidi e autenticamente umani, rimuovendo ogni traccia di robotismo." },
     { name: "PM - Interpretazione Trascrizioni", description: "Estrae azioni, decisioni e responsabili da riunioni e note tecniche, strutturando il testo per la chiarezza progettuale." },
     { name: "Copywriter Persuasivo", description: "Potenzia i testi di marketing evidenziando i benefici per il cliente con un tono energico e orientato alla conversione." },
-    { name: "Revisore Legale/Regolatorio", description: "Riformula testi per rimuovere ambiguità, garantendo precisione linguistica e conformità formale a standard legali e regolatori." },
-    { name: "Scrittore di Newsletter", description: "Crea newsletter B2B coinvolgenti, strutturate con ganci forti e chiare Call to Action, mantenendo un tono professionale ma conversazionale." },
-    { name: "Social Media Manager B2B", description: "Adatta i contenuti per post su piattaforme professionali (es. LinkedIn), rendendoli concisi, leggibili e ottimizzati per l'engagement." },
-    { name: "Comunicatore di Crisi PR", description: "Trasforma i messaggi in comunicazioni ufficiali di crisi: calme, empatiche, autorevoli e prive di speculazioni." },
-    { name: "Traduttore Tecnico IT", description: "Semplifica concetti tecnici complessi in linguaggio comprensibile per un pubblico non specializzato (manager, clienti), focalizzandosi su benefici e implicazioni pratiche." },
-    { name: "Specialista Comunicazioni HR", description: "Adatta le comunicazioni interne ai dipendenti, garantendo un tono professionale, empatico, inclusivo e conforme alle policy aziendali." },
+    { name: "Revisore Legale/Regolatorio", description: "Riformula testi per rimuovere ambiguità, garantendo precisione linguistica e conformità formale." },
+    { name: "Scrittore di Newsletter", description: "Crea newsletter B2B coinvolgenti, strutturate con ganci forti e chiare Call to Action." },
+    { name: "Social Media Manager B2B", description: "Adatta i contenuti per post su piattaforme professionali (es. LinkedIn), rendendoli concisi e ottimizzati per l'engagement." },
+    { name: "Comunicatore di Crisi PR", description: "Trasforma i messaggi in comunicazioni ufficiali di crisi: calme, empatiche e autorevoli." },
+    { name: "Traduttore Tecnico IT", description: "Semplifica concetti tecnici complessi in linguaggio comprensibile per un pubblico non specializzato." },
+    { name: "Specialista Comunicazioni HR", description: "Adatta le comunicazioni interne ai dipendenti, garantendo un tono professionale, empatico e inclusivo." },
     { name: "Ottimizzatore Email di Vendita", description: "Riscrive email a freddo B2B per massimizzare il tasso di risposta, con personalizzazione e Call to Action a basso attrito." },
-    { name: "L'Umanizzatore", description: "Rende i testi generati dall'AI naturali, fluidi e autenticamente umani, rimuovendo ogni traccia di robotismo per una comunicazione più coinvolgente." },
+  ];
+
+  const interpreterProfiles = [
+    { name: "Analista Contratto di Vendita", description: "Estrae clausole critiche, scadenze e rischi finanziari dai tuoi contratti di vendita." },
+    { name: "Revisore Contratto di Acquisto", description: "Valuta le condizioni di acquisto, i termini di consegna e le clausole di IP per i contratti con i fornitori." },
+    { name: "Estrattore P&L Aziendale", description: "Calcola i margini di profitto chiave (lordo, operativo, netto) dal Conto Economico." },
+    { name: "Analista Bilancio Aziendale", description: "Analizza i bilanci per la solvibilità, calcolando i rapporti di liquidità e leva finanziaria." },
+    { name: "Sintesi Legale Breve", description: "Sintetizza sentenze e decisioni legali in formato standardizzato 'Case Brief' per lo studio." },
+    { name: "Revisore Polizza Assicurativa", description: "Identifica massimali, franchigie, esclusioni e clausole potenzialmente vessatorie nelle polizze." },
+    { name: "Verificatore Fatture/Bollette", description: "Estrae i dati contabili essenziali dalle fatture (numero, PO, data scadenza, totali) per l'automazione." },
+    { name: "Estrattore Dati Fatti", description: "Estrae fatti, date, entità e luoghi da documenti forensi o dichiarazioni per creare una timeline oggettiva." },
+    { name: "Analista Debiti/Liquidità", description: "Calcola il capitale circolante, analizza i rapporti di liquidità (Quick Ratio) e identifica i covenant di debito." },
+    { name: "Spiega in Parole Semplici", description: "Trasforma documenti legali e finanziari complessi in linguaggio manageriale chiaro e conciso." },
   ];
 
   return (
@@ -23,94 +36,34 @@ export default function TextValidatorAIPage() {
       <div className="w-full max-w-4xl">
         <header className="mb-16 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold text-blue-400 mb-4 leading-tight">
-            L'Unica Soluzione AI per Testi B2B Autentici e di Qualità Verificata.
+            Due Strumenti Potenti. Un'Unica Piattaforma.
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Text Validator AI trasforma il contenuto generato automaticamente in messaggi professionali, coerenti e indistinguibili da quelli umani, <strong>validandone la qualità tramite la nostra metodologia proprietaria.</strong>
+            Text Validator AI non è solo uno strumento, ma una suite di soluzioni per garantire qualità, chiarezza e accuratezza in ogni testo.
           </p>
         </header>
 
-		{/* Sezione: Cosa facciamo e come lo certifichiamo */}
-        <section className="mb-16 py-16 bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
-          <h2 className="text-4xl font-bold text-center text-blue-300 mb-10">Il Nostro Vantaggio: Il Doppio Controllo AI</h2>
-          <div className="flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0 md:space-x-8">
-            <div className="md:w-1/2">
-              <img 
-                src="/placeholder-workflow-image.png"
-                alt="Workflow in 3 passaggi: Pulizia, Normalizzazione, Valutazione Qualità" 
-                className="rounded-lg shadow-xl w-full h-auto object-cover"
-              />
-              <p className="text-sm text-gray-500 mt-2 text-center">
-                (Il processo: Input caotico &gt; Igiene Prompt &gt; Normalizzazione Tono &gt; Valutazione Qualità Umana™)
-              </p>
-            </div>
-            <div className="md:w-1/2 space-y-6 text-left">
-              {/* MODIFICA: Primo paragrafo per rimuovere i doppi asterischi */}
-              <p className="text-gray-300 text-lg">
-                Text Validator AI non si limita a pulire il testo. Implementiamo un innovativo <strong>Doppio Controllo AI</strong>:
-                una prima fase di <strong>Igiene del Prompt e Normalizzazione del Tono</strong> trasforma il tuo testo grezzo in un contenuto professionale e on-brand.
-                Successivamente, un secondo <strong>Agente AI (LLM-as-a-Judge)</strong> valuta oggettivamente la qualità del risultato, assegnando un <strong>Punteggio di Qualità Umana™</strong> per <strong>valutarne e garantirne l'eccellenza.</strong>
-              </p>
-              <p className="text-gray-300 text-lg">
-                Questo processo garantisce che ogni output sia non solo privo di errori e formattazione "AI-ish", ma anche efficace, coerente e indistinguibile da un testo scritto da un esperto umano.
-              </p>
-               <div className="text-center mt-8">
-                  <Link href="/pricing" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md">
-                      Scopri i Piani
-                  </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* III. Sezione Funzionalità (Value-Based Focus) */}
-        <section className="mb-16 py-16">
-          <h2 className="text-4xl font-bold text-center text-blue-400 mb-12">Le Funzionalità che Trasformano il Tuo Business</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
-              <h3 className="text-3xl font-semibold text-blue-300 mb-4">Zero Rischi: Garanzia di Compliance e Brand Safety.</h3>
-              <p className="text-gray-400 mb-6">Il caos di formattazione nei file di configurazione, i messaggi HR sensibili o i testi legali non revisionati danneggiano la tua reputazione. Garantiamo che l'output sia formalmente corretto e robusto, mitigando il rischio di prompt injection.</p>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 pl-5">
-                <li><strong>Compliance Interna:</strong> Coerenza del tono per le comunicazioni di crisi e HR.</li>
-                <li><strong>No-Storage Policy:</strong> Il tuo testo non viene mai conservato, garantendo la massima conformità GDPR.</li>
-                <li><strong>Robustezza:</strong> Filtraggio di input malevoli (Prompt Injection Mitigation).</li>
-              </ul>
-              <img 
-                src="/placeholder-compliance-image.png"
-                alt="Illustrazione di sicurezza e compliance GDPR" 
-                className="mt-8 rounded-lg shadow-md w-full h-48 object-cover"
-              />
-              <p className="text-sm text-gray-500 mt-2 text-center">
-                (Illustrazione: Sicurezza e conformità GDPR con "No Storage Policy")
-              </p>
-            </div>
-
-            <div className="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
-              <h3 className="text-3xl font-semibold text-blue-300 mb-4">Massimizza la Conversione, Non la Revisione Manuale.</h3>
-              <p className="text-gray-400 mb-6">I copywriter e i SMM non possono sprecare tempo prezioso a "umanizzare" l'output di un LLM. La nostra AI è specializzata nell'infondere empatia, coerenza del brand e tocco persuasivo nei tuoi testi, dalle newsletter alle email di vendita, assicurando un risultato finale convincente.</p>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 pl-5">
-                <li><strong>Riduzione Editing:</strong> Riduci il tempo di post-editing manuale fino al 50%.</li>
-                <li><strong>Coerenza del Brand:</strong> Mantiene il tuo Tone of Voice specifico in tutti i canali.</li>
-                <li><strong>Output Persuasivo:</strong> Genera bozze ottimizzate, coinvolgenti e mirate.</li>
-              </ul>
-              <img 
-                src="/placeholder-persuasion-image.png"
-                alt="Illustrazione di copywriting persuasivo ed efficienza" 
-                className="mt-8 rounded-lg shadow-md w-full h-48 object-cover"
-              />
-              <p className="text-sm text-gray-500 mt-2 text-center">
-                (Illustrazione: Copywriting persuasivo e riduzione dell'editing manuale)
-              </p>
-            </div>
-          </div>
-        </section>
-		
-        {/* Sezione: Elenco Profili AI */}
+        {/* Sezione Validator */}
         <section className="py-16">
-          <h2 className="text-4xl font-bold text-center text-blue-400 mb-12">I Nostri 11 Profili Esperti al Tuo Servizio</h2>
+          <h2 className="text-4xl font-bold text-center text-blue-400 mb-4">Validator AI</h2>
+          <p className="text-lg text-center text-gray-400 mb-12 max-w-2xl mx-auto">Perfeziona i tuoi testi. Pulisci il formato, normalizza il tono e rendi ogni comunicazione autentica e professionale.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {profileDescriptions.map((profile, index) => (
-              <div key={index} className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 text-center">
+            {validatorProfiles.map((profile, index) => (
+              <div key={`val-${index}`} className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                <h3 className="text-2xl font-semibold text-white mb-3">{profile.name}</h3>
+                <p className="text-gray-300">{profile.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        {/* Sezione Interpreter */}
+        <section className="py-16">
+          <h2 className="text-4xl font-bold text-center text-green-400 mb-4">Interpreter AI</h2>
+          <p className="text-lg text-center text-gray-400 mb-12 max-w-2xl mx-auto">Comprendi in pochi secondi. Estrai i punti chiave, analizza i rischi e decodifica documenti complessi, da contratti a bilanci.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {interpreterProfiles.map((profile, index) => (
+              <div key={`int-${index}`} className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
                 <h3 className="text-2xl font-semibold text-white mb-3">{profile.name}</h3>
                 <p className="text-gray-300">{profile.description}</p>
               </div>

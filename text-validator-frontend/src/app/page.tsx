@@ -23,7 +23,7 @@ export default function HomePage() {
   const [selectedProfile, setSelectedProfile] = useState("Generico");
 
   // Dati globali provenienti dal nostro Context
-  const { allowedProfiles, fetchUserStatus } = useUsage();
+  const { validator_profiles: allowedProfiles, userTier, fetchUserStatus } = useUsage();
 
   // Hook di Clerk e Next.js necessari in questa pagina
   const { isSignedIn, getToken, signOut } = useAuth();
@@ -130,7 +130,7 @@ export default function HomePage() {
               >
                   {profileOptions.map((profile) => {
                       // La logica per disabilitare i profili ora usa 'allowedProfiles' dal Context
-                      const isDisabled = allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
+                      const isDisabled = !!allowedProfiles && allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
                       return (
                           <option
                               key={profile}
@@ -205,18 +205,18 @@ export default function HomePage() {
             </button>
           </div>
 
-          {qualityReport && (
-            <div className="mt-8 rounded-xl bg-gray-800 p-6 border border-gray-700 shadow-xl">
-              <h2 className="text-2xl font-semibold text-blue-400">Report di Qualità</h2>
-              <div className="mt-4 flex items-center justify-center text-center">
-                <p className="text-6xl font-bold text-green-400">{qualityReport.human_quality_score}</p>
-                <p className="ml-2 text-2xl text-gray-400">/ 100</p>
-              </div>
-              <p className="mt-4 text-gray-300 text-center italic">
-                {qualityReport.reasoning}
-              </p>
-            </div>
-          )}
+          {userTier !== 'free' && qualityReport && (
+  		    <div className="mt-8 rounded-xl bg-gray-800 p-6 border border-gray-700 shadow-xl">
+			  <h2 className="text-2xl font-semibold text-blue-400">Controllo di Qualità Esperto</h2>
+			  <div className="mt-4 flex items-center justify-center text-center">
+			    <p className="text-6xl font-bold text-green-400">{qualityReport.human_quality_score}</p>
+			    <p className="ml-2 text-2xl text-gray-400">/ 100</p>
+			  </div>
+			  <p className="mt-4 text-gray-300 text-center italic">
+			    {qualityReport.reasoning}
+			  </p>
+		    </div>
+		  )}
       </div>
     </main>
   );

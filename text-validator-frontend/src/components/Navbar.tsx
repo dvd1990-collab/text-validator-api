@@ -41,7 +41,7 @@ export default function Navbar() {
     <>
       <nav className="fixed w-full z-40 bg-gray-900 border-b border-gray-700 shadow-lg py-4 px-8 md:px-12 flex justify-between items-center">
         <div className="flex items-center">
-          <Link href="/" className="text-3xl font-extrabold text-blue-400 hover:text-blue-300 transition-colors duration-200">
+          <Link href="/text-validator-ai" className="text-3xl font-extrabold text-blue-400 hover:text-blue-300 transition-colors duration-200">
             Text Validator
           </Link>
         </div>
@@ -57,8 +57,8 @@ export default function Navbar() {
 
         {/* Links e Bottoni per desktop e menu mobile */}
         <div className={`${isMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-8 absolute md:static top-full left-0 w-full md:w-auto bg-gray-900 md:bg-transparent p-8 md:p-0 border-t md:border-t-0 border-gray-700 shadow-lg md:shadow-none`}>
-          
-          <Link href="/text-validator-ai" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Text Validator AI</Link>
+          <Link href="/" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Validator</Link>
+		  <Link href="/interpreter" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Interpreter</Link>
           <Link href="/roadmap" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Roadmap</Link>
           <Link href="/use-cases" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Use Cases</Link>
           <Link href="/pricing" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Pricing</Link>
