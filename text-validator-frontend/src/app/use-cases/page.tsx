@@ -324,7 +324,7 @@ export default function UseCasesPage() {
 			onClick={() => handleTabChange('compliance')}
 			className={`px-8 py-3 text-xl font-semibold transition-colors ${activeTab === 'compliance' ? 'border-b-2 border-yellow-500 text-white' : 'text-gray-400 hover:text-white'}`}
           >
-			Compliance
+			Compliance Checkr
 	      </button>
         </div>
 

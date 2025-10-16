@@ -32,9 +32,9 @@ export default function PricingPage() {
                         <p className="text-gray-300 text-lg mb-6">Per iniziare e testare le funzionalità base.</p>
                         <p className="text-5xl font-extrabold text-white mb-6">€0<span className="text-xl text-gray-500">/mese</span></p>
                         <ul className="text-gray-400 text-left space-y-3 mb-8">
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>10 Chiamate/giorno</strong> (condivise)</span></li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 5.000 caratteri</strong> per input</span></li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Validator:</strong> 2 Profili Base</li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>3 Chiamate/giorno</strong> (condivise)</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 500 caratteri</strong> per input</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Validator:</strong> 2 Profili Base</span></li>
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Interpreter:</strong> 1 Profilo Base</span></li>
 							<li className="flex items-start"><span className="text-red-500 mr-2">✗</span><strong>Compliance Checkr</strong></li>
                             <li className="flex items-start"><span className="text-red-500 mr-2">✗</span>Senza Controllo di Qualità AI²™</li>
@@ -53,11 +53,12 @@ export default function PricingPage() {
                         <p className="text-blue-200 text-lg mb-6">Ideale per sbloccare tutta la potenza dell'AI.</p>
                         <p className="text-6xl font-extrabold text-white mb-6">€9,99<span className="text-xl text-gray-400">/mese</span></p>
                         <ul className="text-blue-100 text-left space-y-3 mb-8">
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>30 Chiamate/giorno</strong> (condivise)</span></li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 50.000 caratteri</strong></span></li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Tutti i Profili</strong> Validator & Interpreter</li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Compliance Checkr</strong> INCLUSO</li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Con</strong> Controllo di Qualità AI²™</li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>10 Chiamate/giorno</strong> (condivise)</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 10.000 caratteri</strong></span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Validator:</strong> 2 Profili base + 3 advanced</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Interpreter:</strong> 1 Profilo base + 4 advanced</span></li>
+                            <li className="flex items-start"><span className="text-red-500 mr-2">✗</span><span><strong>Compliance Checkr</strong></span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Con</strong> Controllo di Qualità AI²™</span></li>
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Fino a 2 Voci Personalizzate (CTOV)</strong></li> {/* <-- RIGA AGGIUNTA */}
                         </ul>
                     </div>
@@ -73,11 +74,11 @@ export default function PricingPage() {
                         <p className="text-gray-300 text-lg mb-6">Per professionisti e team con volumi elevati.</p>
                         <p className="text-5xl font-extrabold text-white mb-6">€49<span className="text-xl text-gray-500">/mese</span></p>
                         <ul className="text-gray-400 text-left space-y-3 mb-8">
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>200 Chiamate/giorno</strong> (condivise)</span></li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 100.000 caratteri</strong></span></li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Tutti i Profili</strong> Validator & Interpreter</li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Compliance Checkr</strong> INCLUSO</li>
-                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Con</strong> Controllo di Qualità AI²™</li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>100 Chiamate/giorno</strong> (condivise)</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Limite 50.000 caratteri</strong></span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Tutti i Profili</strong> Validator & Interpreter</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Compliance Checkr</strong> INCLUSO</span></li>
+                            <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><span><strong>Con</strong> Controllo di Qualità AI²™</span></li>
                             <li className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>Fino a 5 Voci Personalizzate (CTOV)</strong></li> {/* <-- RIGA AGGIUNTA */}
                             <li className="flex items-start"><span className="text-gray-500 mr-2">●</span>Accesso API e Funzionalità future</li>
                         </ul>

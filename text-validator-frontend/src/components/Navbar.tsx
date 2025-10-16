@@ -59,7 +59,7 @@ export default function Navbar() {
         <div className={`${isMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-8 absolute md:static top-full left-0 w-full md:w-auto bg-gray-900 md:bg-transparent p-8 md:p-0 border-t md:border-t-0 border-gray-700 shadow-lg md:shadow-none`}>
           <Link href="/" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Validator</Link>
 		  <Link href="/interpreter" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Interpreter</Link>
-		  <Link href="/compliance-checkr" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Compliance Check</Link>
+		  <Link href="/compliance-checkr" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Compliance Checkr</Link>
           <Link href="/roadmap" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Roadmap</Link>
           <Link href="/use-cases" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Use Cases</Link>
           <Link href="/pricing" className="text-gray-300 hover:text-blue-300 text-lg font-semibold transition-colors duration-200">Pricing</Link>

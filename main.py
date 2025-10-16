@@ -27,8 +27,8 @@ from jose import jwt, jwk # pip install python-jose
 
 PLANS = {
     "free": {
-        "shared_limit": 10,
-        "max_input_length": 5000, # Limite di 5,000 caratteri per il piano Free
+        "shared_limit": 3,
+        "max_input_length": 500,
         "validator": {
             "allowed_profiles": ["Generico", "L'Umanizzatore"],
             "quality_check": False
@@ -38,7 +38,7 @@ PLANS = {
             "quality_check": False
         },
         "compliance_checkr": {
-            "enabled": True 
+            "enabled": False 
         },
         "ctov": { 
         "enabled": False, 
@@ -46,18 +46,18 @@ PLANS = {
         } 
     },
     "starter": {
-        "shared_limit": 30,
-        "max_input_length": 50000, # Limite molto più alto
+        "shared_limit": 10,
+        "max_input_length": 10000,
         "validator": {
-            "allowed_profiles": "all",
+            "allowed_profiles": ["Generico", "L'Umanizzatore", "Copywriter Persuasivo", "Revisore Legale/Regolatorio", "Scrittore di Newsletter"],
             "quality_check": True
         },
         "interpreter": {
-            "allowed_profiles": "all",
+            "allowed_profiles": ["Spiega in Parole Semplici", "Analista Contratto di Vendita", "Revisore Contratto di Acquisto", "Estrattore P&L Aziendale", "Analista Bilancio Aziendale"],
             "quality_check": True
         },
         "compliance_checkr": {
-            "enabled": True 
+            "enabled": False 
         },
         "ctov": { 
         "enabled": True, 
@@ -65,8 +65,8 @@ PLANS = {
         } 
     },
     "pro": {
-        "shared_limit": 200,
-        "max_input_length": 100000, # Limite ancora più alto
+        "shared_limit": 100,
+        "max_input_length": 50000,
         "validator": {
             "allowed_profiles": "all",
             "quality_check": True
