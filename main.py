@@ -18,6 +18,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 import ai_core
+from typing import List, Optional
 # --- Aggiungi l'importazione per la verifica dei JWT RS256 ---
 from jose import jwt, jwk # pip install python-jose
 
@@ -38,7 +39,11 @@ PLANS = {
         },
         "compliance_checkr": {
             "enabled": True 
-        }
+        },
+        "ctov": { 
+        "enabled": False, 
+        "max_profiles": 0 
+        } 
     },
     "starter": {
         "shared_limit": 30,
@@ -53,7 +58,11 @@ PLANS = {
         },
         "compliance_checkr": {
             "enabled": True 
-        }
+        },
+        "ctov": { 
+        "enabled": True, 
+        "max_profiles": 2 
+        } 
     },
     "pro": {
         "shared_limit": 200,
@@ -68,7 +77,11 @@ PLANS = {
         },
         "compliance_checkr": {
             "enabled": True 
-        }
+        },
+        "ctov": { 
+        "enabled": True, 
+        "max_profiles": 5 
+        } 
     },
     "admin": {
         "shared_limit": -1, # Illimitato
@@ -83,7 +96,11 @@ PLANS = {
         },
         "compliance_checkr": {
             "enabled": True 
-        }
+        },
+        "ctov": { 
+        "enabled": True, 
+        "max_profiles": -1 
+        } 
     }
 }
 
@@ -130,6 +147,7 @@ if not CLERK_JWKS_URL:
 class TextInput(BaseModel):
     text: str = Field(..., min_length=10)
     profile_name: str = Field("Generico", description="Nome del profilo AI da utilizzare per la validazione.") 
+    ctov_profile_id: Optional[str] = None 
 
 class QualityReport(BaseModel):
     reasoning: str
@@ -138,7 +156,19 @@ class QualityReport(BaseModel):
 class UsageInfo(BaseModel):
     count: int
     limit: int
-    
+
+class CTOVProfileBase(BaseModel):
+    name: str = Field(..., min_length=1, max_length=50)
+    mission: Optional[str] = Field(None, max_length=250)
+    archetype: Optional[str] = None
+    tone_traits: Optional[List[str]] = []
+    banned_terms: Optional[List[str]] = []
+
+class CTOVProfileCreate(CTOVProfileBase):
+    pass
+
+class CTOVProfileResponse(CTOVProfileBase):
+    id: str # UUID sarà convertito in stringa
 # === INIZIO BLOCCO DA AGGIUNGERE ===
 # 1. DEFINISCI IL NUOVO MODELLO DI RISPOSTA PER LO STATO UTENTE
 class UserStatusResponse(BaseModel):
@@ -147,6 +177,9 @@ class UserStatusResponse(BaseModel):
     validator_profiles: list[str] | str
     interpreter_profiles: list[str] | str
     compliance_access: bool
+    ctov_access: bool               
+    ctov_max_profiles: int          
+    ctov_profiles: List[CTOVProfileResponse] 
 # === FINE BLOCCO DA AGGIUNGERE ===
 
 class ValidationResponse(BaseModel):
@@ -194,6 +227,7 @@ async def read_health():
 @app.post("/validate", response_model=ValidationResponse, tags=["Validator"])
 @limiter.limit("5/minute")
 async def validate_text(request: Request, payload: TextInput, authorization: str = Header(None)):
+    user_id, profile = await get_user_profile_from_token(authorization)
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Token di autenticazione mancante.")
 
@@ -214,7 +248,13 @@ async def validate_text(request: Request, payload: TextInput, authorization: str
                 public_key = jwk.construct(key_data)
                 break
         if not public_key: raise Exception("Chiave pubblica non trovata.")
-        decoded_token = jwt.decode(clerk_jwt_token_string, public_key, algorithms=["RS256"], options={"verify_signature": True, "verify_aud": False, "verify_iss": False})
+        options = {
+            "verify_signature": True, 
+            "verify_aud": False, 
+            "verify_iss": False,
+            "leeway": 5
+        }
+        decoded_token = jwt.decode(clerk_jwt_token_string, public_key, algorithms=["RS256"], options=options)
         user_id = decoded_token.get("sub")
         if not user_id: raise Exception("ID utente non trovato.")
     except Exception as e:
@@ -254,10 +294,18 @@ async def validate_text(request: Request, payload: TextInput, authorization: str
             supabase.table('profiles').update({'last_used_date': today, 'usage_count': 0}).eq('id', user_id).execute()
         if current_count >= shared_limit:
             raise HTTPException(status_code=429, detail=f"Hai superato il limite giornaliero condiviso di {shared_limit} chiamate.")
-
+    
+    ctov_data = None
+    if payload.ctov_profile_id:
+        # Se viene richiesto un profilo CTOV, recuperalo
+        ctov_res = supabase.table('ctov_profiles').select('*').eq('id', payload.ctov_profile_id).eq('user_id', user_id).single().execute()
+        if not ctov_res.data:
+            raise HTTPException(status_code=404, detail="Profilo Custom Tone of Voice non trovato o non autorizzato.")
+        ctov_data = ctov_res.data
+        
     # --- ELABORAZIONE AI ---
     try:
-        normalized_text = await ai_core.normalize_text(payload.text, profile_name=payload.profile_name, model_name=model_to_use)
+        normalized_text = await ai_core.normalize_text(payload.text, profile_name=payload.profile_name, model_name=model_to_use, ctov_data=ctov_data)
         
         quality_report_obj = None
         if validator_plan["quality_check"]:
@@ -583,6 +631,118 @@ async def clerk_webhook_handler(request: Request, response: Response):
         logging.info(f"Webhook: Evento di tipo {event_type} ricevuto e ignorato.")
         return {"message": f"Event type {event_type} acknowledged, no action taken."}
 
+@app.post("/ctov-profiles", response_model=CTOVProfileResponse, tags=["Custom Tone of Voice"])
+async def create_ctov_profile(payload: CTOVProfileCreate, authorization: str = Header(None)):
+    # 1. Autenticazione e recupero profilo/piano (codice standard)
+    user_id, profile = await get_user_profile_from_token(authorization)
+    user_tier_name = profile.get('subscription_tier', 'free')
+    user_role = profile.get('role', 'user')
+    plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
+
+    # 2. Verifica se la funzionalità è abilitata per il piano
+    ctov_plan = plan["ctov"]
+    if not ctov_plan["enabled"]:
+        raise HTTPException(status_code=403, detail="La creazione di Voci Personalizzate non è inclusa nel tuo piano.")
+
+    # 3. Verifica il limite massimo di profili
+    max_profiles = ctov_plan["max_profiles"]
+    if max_profiles != -1:
+        count_res = supabase.table('ctov_profiles').select('id', count='exact').eq('user_id', user_id).execute()
+        if count_res.count is not None and count_res.count >= max_profiles:
+            raise HTTPException(status_code=403, detail=f"Hai raggiunto il limite di {max_profiles} Voci Personalizzate per il tuo piano.")
+
+    # 4. Inserimento nel database
+    try:
+        insert_data = payload.dict()
+        insert_data['user_id'] = user_id
+        res = supabase.table('ctov_profiles').insert(insert_data).execute()
+        if not res.data:
+            raise Exception("Creazione profilo CTOV fallita")
+        # Converte l'UUID in stringa per la risposta
+        created_profile = res.data[0]
+        created_profile['id'] = str(created_profile['id'])
+        return CTOVProfileResponse(**created_profile)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore interno durante la creazione del profilo: {str(e)}")
+
+
+@app.get("/ctov-profiles", response_model=List[CTOVProfileResponse], tags=["Custom Tone of Voice"])
+async def get_ctov_profiles(authorization: str = Header(None)):
+    user_id, _ = await get_user_profile_from_token(authorization)
+    res = supabase.table('ctov_profiles').select('*').eq('user_id', user_id).order('created_at').execute()
+    return [CTOVProfileResponse(id=str(p['id']), **p) for p in res.data]
+
+@app.put("/ctov-profiles/{profile_id}", response_model=CTOVProfileResponse, tags=["Custom Tone of Voice"])
+async def update_ctov_profile(profile_id: str, payload: CTOVProfileCreate, authorization: str = Header(None)):
+    user_id, _ = await get_user_profile_from_token(authorization)
+    
+    try:
+        # L'update su Supabase include un .eq('user_id', user_id) per sicurezza:
+        # l'utente può modificare solo un profilo che gli appartiene.
+        update_data = payload.dict(exclude_unset=True)
+        res = supabase.table('ctov_profiles').update(update_data).eq('id', profile_id).eq('user_id', user_id).execute()
+        
+        if not res.data:
+            raise HTTPException(status_code=404, detail="Profilo non trovato o non autorizzato.")
+            
+        updated_profile = res.data[0]
+        updated_profile['id'] = str(updated_profile['id'])
+        return CTOVProfileResponse(**updated_profile)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore interno durante l'aggiornamento: {str(e)}")
+
+
+@app.delete("/ctov-profiles/{profile_id}", status_code=204, tags=["Custom Tone of Voice"])
+async def delete_ctov_profile(profile_id: str, authorization: str = Header(None)):
+    user_id, _ = await get_user_profile_from_token(authorization)
+    
+    try:
+        # Anche il delete include il controllo su user_id.
+        res = supabase.table('ctov_profiles').delete().eq('id', profile_id).eq('user_id', user_id).execute()
+        
+        if not res.data:
+            # Se nessun dato viene restituito, significa che il record non esisteva o l'utente non aveva i permessi.
+            raise HTTPException(status_code=404, detail="Profilo non trovato o non autorizzato.")
+        
+        return None # Ritorna una risposta 204 No Content in caso di successo
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore interno durante l'eliminazione: {str(e)}")
+
+# === FINE BLOCCO ENDPOINT CTOV ===
+
+
+# Funzione helper da aggiungere per non ripetere il codice di autenticazione
+async def get_user_profile_from_token(authorization: str):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token di autenticazione mancante.")
+    
+    clerk_jwt_token_string = authorization.split(" ")[1]
+    user_id = None
+    try:
+        # Logica di validazione token...
+        jwks_response = requests.get(CLERK_JWKS_URL)
+        jwks_response.raise_for_status()
+        jwks_data = jwks_response.json()
+        header = jwt.get_unverified_header(clerk_jwt_token_string)
+        public_key = None
+        for key_data in jwks_data["keys"]:
+            if key_data["kid"] == header["kid"]:
+                public_key = jwk.construct(key_data)
+                break
+        if not public_key: raise Exception("Chiave pubblica non trovata.")
+        decoded_token = jwt.decode(clerk_jwt_token_string, public_key, algorithms=["RS256"], options={"verify_signature": True, "verify_aud": False, "verify_iss": False})
+        user_id = decoded_token.get("sub")
+        if not user_id: raise Exception("ID utente non trovato.")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Validazione token fallita: {str(e)}")
+
+    profile_res = supabase.table('profiles').select('*').eq('id', user_id).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=500, detail="Profilo utente non trovato.")
+    profile = profile_res.data[0]
+    
+    return user_id, profile
+
 @app.get("/user-status", response_model=UserStatusResponse, tags=["User Management"])
 @limiter.limit("50/minute")
 async def get_user_status(request: Request, authorization: str = Header(None)):
@@ -619,13 +779,24 @@ async def get_user_status(request: Request, authorization: str = Header(None)):
     user_tier_name = profile.get('subscription_tier', 'free')
     user_role = profile.get('role', 'user')
     plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
-
+    ctov_res = supabase.table('ctov_profiles').select('*').eq('user_id', user_id).execute()
+    #ctov_profiles_data = [CTOVProfileResponse(**p, id=str(p['id'])) for p in ctov_res.data]
+    
+    ctov_profiles_data = []
+    for p in ctov_res.data:
+        profile_data = p.copy()  # Crea una copia per sicurezza
+        profile_data['id'] = str(profile_data['id'])  # Sovrascrive l'id con la sua versione stringa
+        ctov_profiles_data.append(CTOVProfileResponse(**profile_data))
+    
     return UserStatusResponse(
         usage=UsageInfo(count=profile.get('usage_count', 0), limit=plan["shared_limit"]),
         tier=user_tier_name if user_role != 'admin' else 'admin',
         validator_profiles=plan["validator"]["allowed_profiles"],
         interpreter_profiles=plan["interpreter"]["allowed_profiles"],
-        compliance_access=plan["compliance_checkr"]["enabled"]
+        compliance_access=plan["compliance_checkr"]["enabled"],
+        ctov_access=plan["ctov"]["enabled"],
+        ctov_max_profiles=plan["ctov"]["max_profiles"],
+        ctov_profiles=ctov_profiles_data
     )
 
 

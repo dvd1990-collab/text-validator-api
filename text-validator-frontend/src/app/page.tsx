@@ -5,12 +5,18 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useUsage } from '@/context/UsageContext'; // Importa il nostro hook del Context
+import CTOVModal from '@/components/CTOVModal';
 
 // Non importiamo più SettingsModal o GearIcon qui, sono gestiti dalla Navbar
 
 type QualityReport = {
   reasoning: string;
   human_quality_score: number;
+};
+
+type SelectedProfile = {
+    type: 'standard' | 'ctov';
+    value: string; // "Generico" per standard, o l'ID per CTOV
 };
 
 export default function HomePage() {
@@ -20,16 +26,24 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [qualityReport, setQualityReport] = useState<QualityReport | null>(null);
   const [copyButtonText, setCopyButtonText] = useState('Copia');
-  const [selectedProfile, setSelectedProfile] = useState("Generico");
+  const [selectedProfile, setSelectedProfile] = useState<SelectedProfile>({ type: 'standard', value: 'Generico' });
+  const [isModalOpen, setIsModalOpen] = useState(false); // Stato per aprire/chiudere il modale
 
   // Dati globali provenienti dal nostro Context
-  const { validator_profiles: allowedProfiles, userTier, fetchUserStatus } = useUsage();
+  const { 
+    validator_profiles: allowedProfiles, 
+    userTier, 
+    fetchUserStatus,
+    ctovAccess, // Permesso per creare CTOV
+    ctovMaxProfiles, // Limite di profili
+    ctovProfiles // Lista dei profili custom
+  } = useUsage();
 
   // Hook di Clerk e Next.js necessari in questa pagina
   const { isSignedIn, getToken, signOut } = useAuth();
   const router = useRouter();
   
-  const profileOptions = [
+  const standardProfileOptions = [
       "Generico", "L'Umanizzatore", "PM - Interpretazione Trascrizioni", 
       "Copywriter Persuasivo", "Revisore Legale/Regolatorio", "Scrittore di Newsletter", 
       "Social Media Manager B2B", "Comunicatore di Crisi PR", "Traduttore Tecnico IT", 
@@ -53,11 +67,17 @@ export default function HomePage() {
     try {
       const token = await getToken();
       if (!token) throw new Error("Impossibile ottenere il token di autenticazione.");
-
+	  
+	  const payload = {
+        text: inputText,
+        profile_name: selectedProfile.type === 'standard' ? selectedProfile.value : 'Generico', // Invia un nome standard
+        ctov_profile_id: selectedProfile.type === 'ctov' ? selectedProfile.value : null // Invia l'ID solo se è un CTOV
+      };
+	  
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/validate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ text: inputText, profile_name: selectedProfile }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -90,6 +110,19 @@ export default function HomePage() {
       setIsLoading(false);
     }
   };
+  
+  // --- FUNZIONE PER GESTIRE IL CAMBIO NEL DROPDOWN ---
+  const handleProfileChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === 'create_new') {
+      setIsModalOpen(true);
+    } else {
+        const [type, val] = value.split(':');
+        setSelectedProfile({ type: type as 'standard' | 'ctov', value: val });
+    }
+  };
+  
+  const canCreateNewVoice = ctovAccess && (ctovMaxProfiles === -1 || (ctovProfiles && ctovProfiles.length < (ctovMaxProfiles || 0)));
 
   const handleCopy = () => {
     if (!outputText || isLoading) return;
@@ -106,7 +139,8 @@ export default function HomePage() {
   };
   
   return (
-    // Il Fragment <> non è più necessario perché non c'è il modale qui
+    <>
+	<CTOVModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     <main className="flex min-h-screen flex-col items-center bg-gray-900 p-8 text-white">
       <div className="w-full max-w-4xl">
           <header className="mb-8 text-center relative">
@@ -118,33 +152,42 @@ export default function HomePage() {
           </header>
 
           <div className="mb-6">
-              <label htmlFor="aiProfile" className="block text-sm font-medium text-gray-300 mb-2">
-                  Seleziona Profilo AI
-              </label>
-              <select
-                  id="aiProfile"
-                  value={selectedProfile}
-                  onChange={(e) => setSelectedProfile(e.target.value)}
-                  disabled={isLoading}
-                  className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                  {profileOptions.map((profile) => {
-                      // La logica per disabilitare i profili ora usa 'allowedProfiles' dal Context
-                      const isDisabled = !!allowedProfiles && allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
-                      return (
-                          <option
-                              key={profile}
-                              value={profile}
-                              disabled={isDisabled}
-                              className={isDisabled ? 'text-gray-500' : ''}
-                          >
-                              {profile}
-                              {isDisabled ? ' 🔒 (Upgrade)' : ''}
-                          </option>
-                      );
-                  })}
-              </select>
-          </div>
+                <label htmlFor="aiProfile" className="block text-sm font-medium text-gray-300 mb-2">
+                    Seleziona Profilo AI o Voce Personalizzata
+                </label>
+                <select
+                    id="aiProfile"
+                    // Il valore ora è una stringa composta "type:value"
+                    value={`${selectedProfile.type}:${selectedProfile.value}`}
+                    onChange={handleProfileChange}
+                    disabled={isLoading}
+                    className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                    <optgroup label="Profili Standard">
+                        {standardProfileOptions.map((profile) => {
+                            const isDisabled = !!allowedProfiles && allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
+                            return (
+                                <option key={profile} value={`standard:${profile}`} disabled={isDisabled} className={isDisabled ? 'text-gray-500' : ''}>
+                                    {profile} {isDisabled ? '🔒 (Upgrade)' : ''}
+                                </option>
+                            );
+                        })}
+                    </optgroup>
+                    
+                    {ctovAccess && (
+                        <optgroup label="Voci Personalizzate">
+                            {ctovProfiles.map((profile) => (
+                                <option key={profile.id} value={`ctov:${profile.id}`}>
+                                    {profile.name}
+                                </option>
+                            ))}
+                            <option value="create_new" disabled={!canCreateNewVoice} className="text-blue-400 font-semibold">
+                                + Crea Nuova Voce { !canCreateNewVoice && '(Limite raggiunto)'}
+                            </option>
+                        </optgroup>
+                    )}
+                </select>
+            </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -219,5 +262,6 @@ export default function HomePage() {
 		  )}
       </div>
     </main>
+  </>
   );
 }

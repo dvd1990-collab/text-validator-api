@@ -2,6 +2,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -37,7 +38,19 @@ export default function SettingsModal({ isOpen, onClose, userTier }: SettingsMod
         </button>
 
         <h2 className="text-3xl font-bold text-blue-400 mb-6">Impostazioni</h2>
-
+		
+		{/* --- NUOVA SEZIONE GESTIONE VOCI --- */}
+        {userTier !== 'free' && (
+            <div className="mb-8">
+                <h3 className="block text-lg font-semibold text-gray-300 mb-2">
+                    Voci Personalizzate (CTOV)
+                </h3>
+                <Link href="/settings/voices" onClick={onClose} className="block text-center w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-colors">
+                    Gestisci le tue Voci
+                </Link>
+            </div>
+        )}
+		
         {/* Sezione Motore AI */}
         <div className="mb-8">
           <h3 className="block text-lg font-semibold text-gray-300 mb-2">

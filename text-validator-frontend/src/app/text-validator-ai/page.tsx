@@ -79,7 +79,33 @@ export default function TextValidatorAIPage() {
             </div>
           </div>
         </section>
-
+		
+		{/* --- NUOVA SEZIONE: CUSTOM TONE OF VOICE --- */}
+        <section className="mb-16 py-16 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+          <h2 className="text-4xl font-bold text-center text-blue-300 mb-0">Prendi il Controllo: Il Tuo Tone of Voice,</h2>
+		  <h2 className="text-4xl font-bold text-center text-blue-300 mb-12">La Nostra AI</h2>
+          <div className="flex flex-col md:flex-row-reverse items-center justify-around space-y-8 md:space-y-0 md:space-x-8 px-8">
+            <div className="md:w-1/2">
+              <img 
+                src="/placeholder-ctov-image.png"
+                alt="Interfaccia per la creazione di una Voce Personalizzata" 
+                className="rounded-lg shadow-xl w-full h-auto object-cover"
+              />
+            </div>
+            <div className="md:w-1/2 space-y-6 text-left">
+              <h3 className="text-3xl font-semibold text-white">Custom Tone of Voice (CTOV)</h3>
+              <p className="text-gray-300 text-lg">
+                Vai oltre i profili standard. Con la funzionalità CTOV, puoi <strong>insegnare all'AI il tuo specifico stile di comunicazione aziendale</strong>. Definisci la missione, l'archetipo del brand e i termini da evitare per garantire che ogni testo validato sia perfettamente allineato con la tua identità.
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 pl-5">
+				<li><strong>Coerenza Assoluta:</strong> Mantieni lo stesso stile su tutti i canali.</li>
+				<li><strong>Controllo del Brand:</strong> Evita termini non approvati o gergo obsoleto.</li>
+                <li><strong>Efficienza per i Team:</strong> Crea voci diverse per Marketing, HR e Legale.</li>
+			  </ul>
+            </div>
+          </div>
+        </section>
+		
         {/* --- SEZIONE REINSERITA: Funzionalità Business --- */}
         <section className="mb-16 py-16">
 		  <h2 className="text-4xl font-bold text-center text-blue-400 mb-12">Le Funzionalità che Trasformano il Tuo Business</h2>
