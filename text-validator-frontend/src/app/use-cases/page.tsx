@@ -201,26 +201,98 @@ const interpreterUseCases = [
     }
 ];
 
+const complianceUseCases = [
+	{
+	profile: "Analizzatore GDPR per Comunicazioni Marketing",
+	title: "Il Bundling Illegale: Consenso, Sconti e Multe Miliardarie",
+	context: "Un e-commerce propone un'unica checkbox per accettare Termini di Servizio, Privacy Policy e iscrizione alla newsletter in cambio di uno sconto. Questa pratica (bundling) rende il consenso non 'liberamente dato' e non 'specifico', invalidandolo e aprendo la porta a sanzioni GDPR severe.",
+	input: 'Spuntando qui, accetti i nostri Termini di Servizio, confermi di aver letto la Privacy Policy e ti iscrivi alla nostra newsletter per ricevere uno sconto del 10% e comunicazioni personalizzate.',
+	output: `### Punteggio di Rischio Conformità: ALTO\nRisultati del Controllo:\n❌ Consenso: RISCHIO ALTO. Il testo raggruppa (bundling) consensi per finalità diverse (servizio, marketing, profilazione) in un'unica azione, violando il requisito di consenso specifico e granulare del GDPR. L'incentivo economico (sconto) ne compromette ulteriormente la libera espressione.\n⚠️ Informativa Privacy: ATTENZIONE. Si menziona la Privacy Policy ma non viene fornito un link diretto e immediatamente accessibile.\n❌ Diritto di Revoca: RISCHIO ALTO. Manca qualsiasi informazione su come l'utente possa revocare il consenso o disiscriversi facilmente.\nRaccomandazioni (Non Vincolanti):\nSeparare i consensi: Utilizzare checkbox distinte per i Termini di Servizio (necessari per il contratto), per l'iscrizione alla newsletter (marketing) e per le comunicazioni personalizzate (profilazione).\nRendere lo sconto accessibile indipendentemente dal consenso al marketing per garantire la libertà di scelta.\nDisclaimer: Questo è un controllo automatico e non costituisce una consulenza legale. Si raccomanda di consultare un professionista per una valutazione definitiva.`,
+	}, 
+	{ 
+	profile: "Verificatore Anti-Bias per Annunci di Lavoro", 
+	title: "La Fuga dei Talenti: Linguaggio Cifrato che Restringe il Pool di Candidati", 
+	context: "Un annuncio di lavoro utilizza un linguaggio con 'codici di genere' e riferimenti all'età che, sebbene non espliciti, possono scoraggiare inconsciamente candidati qualificati, restringendo il bacino di talenti e aumentando il rischio di contenziosi per discriminazione.", 
+	input: 'Cerchiamo un ninja del codice, dominante nel team di sviluppo, energico e in grado di sostenere un ambiente competitivo ad alta pressione. I recenti laureati sono incoraggiati a candidarsi.', 
+	output:`### Punteggio di Rischio Conformità: ALTO\nRisultati del Controllo:\n⚠️ Linguaggio di Genere: ATTENZIONE. L'uso di termini come "dominante" e "competitivo" è spesso associato a stereotipi maschili e può scoraggiare candidate donne.\n⚠️ Riferimenti all'Età: ATTENZIONE. La menzione esplicita di "recenti laureati" e il termine "energico" possono essere interpretati come un bias a favore di candidati più giovani.\n❌ Requisiti Pertinenti: RISCHIO ALTO. Termini gergali come "ninja del codice" sono legati a una specifica "cultura-fit" e possono escludere professionisti qualificati che non si identificano con tale profilo.\nRaccomandazioni (Non Vincolanti):\nSostituire "dominante" con termini come "collaborativo" o "con forte leadership".\nRimuovere il riferimento a "recenti laureati" per non scoraggiare candidati con maggiore esperienza.\nUsare una descrizione del ruolo più oggettiva al posto di "ninja del codice".\nDisclaimer: Questo è un controllo automatico e non costituisce una consulenza legale. Si raccomanda di consultare un professionista per una valutazione definitiva.`,}, 
+	{ 
+	profile: "Checker per Disclaimer Finanziari (MiFID II / CONSOB)", 
+	title: "Prominenza Obbligatoria: Rischio Nascosto nel Micro-Testo", 
+	context: "Una comunicazione promozionale per un fondo di investimento mette in grande risalto un rendimento potenziale elevato, relegando gli avvisi di rischio a un testo piccolo e grigio, violando il requisito di 'prominenza' imposto dalla MiFID II.", 
+	input: "Investendo nel nostro fondo 'Future Growth', si anticipa un rendimento potenziale stimato del 15% (i dettagli tecnici sui coefficienti beta sono nel KIID). In caratteri piccoli grigi: La volatilità storica del portafoglio suggerisce la possibilità di perdite totali del capitale investito.", 
+	output:`### Punteggio di Rischio Conformità: ALTO\n	Risultati del Controllo:\n❌ Avviso di Rischio Esplicito: RISCHIO ALTO. L'avviso sulla possibilità di perdita totale del capitale è presente ma non è 'prominente'. L'uso di caratteri piccoli e di colore a basso contrasto viola il requisito di presentazione equa e bilanciata dei rischi rispetto ai benefici.\n⚠️ Linguaggio non Ingannevole: ATTENZIONE. L'enorme enfasi sul rendimento potenziale del 15% rispetto alla scarsa visibilità dei rischi può essere considerata una pratica fuorviante.\n⚠️ Chiarezza Informativa: ATTENZIONE. L'uso di gergo tecnico non spiegato come "coefficienti beta" riduce la comprensibilità per un investitore non professionale.\n	Raccomandazioni (Non Vincolanti):\n	Assicurare che il disclaimer di rischio abbia la stessa (o maggiore) prominenza visiva del claim sul rendimento.\n	Aggiungere sempre l'avviso standard: "I rendimenti passati non sono indicativi di quelli futuri".\n	Disclaimer: Questo è un controllo automatico e non costituisce una consulenza legale. Si raccomanda di consultare un professionista per una valutazione definitiva.`,}, 
+	{ 
+	profile: "Validatore di Claim Pubblicitari (Anti-False Advertising)", 
+	title: "L'Illusione del Superlativo: Claim Non Verificabili e UCPD", 
+	context: "Un testo pubblicitario utilizza affermazioni assolute e superlative ('indiscutibilmente il più veloce') senza fornire alcuna prova o fonte a supporto, esponendo l'azienda a sanzioni per pubblicità ingannevole secondo la Direttiva sulle Pratiche Commerciali Sleali (UCPD).", 
+	input: "La Nostra Soluzione è Indiscutibilmente la Più Veloce sul Mercato, offrendo un tempo di risposta senza pari e un'efficienza straordinaria.", 
+	output:`### Punteggio di Rischio Conformità: ALTO\n	Risultati del Controllo:\n❌ Verificabilità dei Claim: RISCHIO ALTO. I claim "Indiscutibilmente la Più Veloce" e "senza pari" sono superlativi assoluti non supportati da alcuna fonte, benchmark o dato verificabile citato nel testo.\n❌ Correttezza Comparativa: RISCHIO ALTO. La comparazione implicita ("la Più Veloce sul Mercato") non è basata su parametri oggettivi e dimostrabili come richiesto dalle normative.\n	Raccomandazioni (Non Vincolanti):\n	Rimuovere i superlativi assoluti o supportarli con prove concrete (es. "Più veloce secondo il test XYZ di Settembre 2025").\n	Sostituire "efficienza straordinaria" con un beneficio quantificabile (es. "riduce i tempi di elaborazione del 40%").\n	Disclaimer: Questo è un controllo automatico e non costituisce una consulenza legale. Si raccomanda di consultare un professionista p\ner una valutazione definitiva.`,},
+	{ 
+	profile: "Revisore di Clausole per Termini di Servizio Semplificati", 
+	title: "Plain Language Compliance: Il Mandato Legale per la Leggibilità dei Contratti", 
+	context: "Una clausola in un contratto per consumatori è scritta in un linguaggio legalistico complesso, violando il requisito della Direttiva sull'Accessibilità UE che impone un livello di comprensibilità B2 (CEFR) o inferiore, rischiando la nullità della clausola stessa.", 
+	input: "Ferme restando le disposizioni di cui all'Articolo IV.b, il Recipiente prende atto e accetta che qualsiasi controversia derivante o in relazione all'inadempienza contrattuale sarà risolta mediante arbitrato vincolante ai sensi del Regolamento Arbitrale della CCIA, con esclusione della giurisdizione ordinaria.", 
+	output:`### Punteggio di Rischio Conformità: MEDIO\n	Risultati del Controllo:\n⚠️ Chiarezza Clausole Onerose: ATTENZIONE. La clausola che impone l'arbitrato vincolante è una clausola onerosa. Anche se legalmente valida, la sua formulazione è complessa.\n❌ Leggibilità (Plain Language): RISCHIO ALTO. Il testo utilizza un linguaggio arcaico ("Ferme restando") e un gergo legale ("inadempienza", "giurisdizione ordinaria") che non rispetta un livello di comprensibilità B2, come richiesto per i contratti con i consumatori.\n	Raccomandazioni (Non Vincolanti):\n	Riformulare la clausola in un linguaggio più semplice, ad esempio: "Qualsiasi disputa su questo contratto sarà risolta tramite un arbitrato e non in un tribunale ordinario."\n	Assicurarsi che le clausole onerose siano approvate specificamente per iscritto, come richiesto dall'Art. 1341 del Codice Civile.\n	Disclaimer: Questo è un controllo automatico e non costituisce una consulenza legale. Si raccomanda di consultare un professionista per una valutazione definitiva.`,},
+	{ 
+	profile: "Analizzatore di Green Claims (CSRD/Tassonomia UE)", 
+	title: "Greenwashing Catastrofico: Verifica Scientifica e Rischio di Sanzioni", 
+	context: "Un'azienda si dichiara 'Carbon Neutral' basandosi esclusivamente sull'acquisto di crediti di carbonio e definisce un suo prodotto '100% Eco-Friendly'. Entrambe sono pratiche considerate greenwashing secondo la Direttiva Green Claims, con sanzioni fino al 4-5% del fatturato.", 
+	input: "La nostra Azienda è Orgogliosamente Carbon Neutral grazie all'acquisto di crediti di offset certificati. Questo prodotto è 100% Eco-Friendly.", 
+	output:`### Punteggio di Rischio Conformità: ALTO	Risultati del Controllo:\n❌ Specificità dei Claim: RISCHIO ALTO. Il claim "100% Eco-Friendly" è generico, vago e non comprovato. È una delle pratiche esplicitamente vietate.\n⚠️ Supporto Scientifico: ATTENZIONE. Dichiararsi "Carbon Neutral" basandosi solo sull'offsetting, senza menzionare sforzi di riduzione diretta delle emissioni, è considerato fuorviante. Manca qualsiasi riferimento a metodologie o certificazioni verificabili.\n	Raccomandazioni (Non Vincolanti):\n	Rimuovere immediatamente il claim "100% Eco-Friendly".\n	Comunicare in modo trasparente la strategia di sostenibilità, dettagliando sia le azioni di riduzione diretta delle emissioni sia, separatamente, le attività di offsetting.\n	Disclaimer: Questo è un controllo automatico e non costituisce una consulenza legale. Si raccomanda di consultare un professionista per una valutazione definitiva.`,},
+	{ 
+	profile: "Revisore di Comunicazioni Mediche e Farmaceutiche", 
+	title: "Chiarezza Clinica: Gergo Medico Inaccessibile per il Pubblico", 
+	context: "La descrizione di una reazione avversa a un farmaco, destinata a un foglietto illustrativo per pazienti, utilizza un gergo clinico incomprensibile, violando le linee guida EMA sulla chiarezza e la sicurezza del paziente.", 
+	input: "Reazione Avversa Rara: Osservata l'insorgenza di acromegalia con episodi transitori di assenza seizure durante la fase di titolazione del farmaco.", 
+	output:`### Punteggio di Rischio Conformità: ALTO\n	Risultati del Controllo:\n❌ Correttezza Terminologica (Pubblico): RISCHIO ALTO. Il testo usa termini clinici specialistici ("acromegalia", "assenza seizure", "titolazione") non comprensibili per un paziente, contravvenendo alle linee guida EMA sulla chiarezza.\n✅ Claim di Efficacia: OK. Il testo non fa alcun claim sull'efficacia del farmaco, ma descrive solo un effetto collaterale.\n	Raccomandazioni (Non Vincolanti):\n	"Tradurre" ogni termine tecnico in un linguaggio semplice, come raccomandato dall'EMA. Esempio: "acromegalia" -> "eccessiva crescita delle ossa di mani, piedi e viso"; "assenza seizure" -> "brevi e improvvisi vuoti di coscienza".\n	Disclaimer: Questo è un controllo automatico e non costituisce una consulenza legale o medica. Si raccomanda di consultare un professionista per una valutazione definitiva.`,},
+	{ 
+	profile: "Checker di Accessibilità Testuale Digitale (WCAG)", 
+	title: "Contrasto Critico: Violazione AA e Rischio di Esclusione Digitale", 
+	context: "Le istruzioni di design per un sito web specificano di usare un link di colore blu chiaro su sfondo bianco e di rimuovere la sottolineatura, violando i criteri di contrasto minimo e di identificazione dei link secondo le WCAG 2.1.", 
+	input: 'Istruzione al Content/Design Team: "Inserire il link di supporto tecnico in blu chiaro (#3366FF) su sfondo bianco (#FFFFFF). Non utilizzare la sottolineatura di default per mantenere il design pulito."', 
+	output:`### Punteggio di Rischio Conformità: ALTO\n	Risultati del Controllo:\n❌ Indipendenza Sensoriale: RISCHIO ALTO. L'istruzione di usare solo il colore per distinguere un link, rimuovendo la sottolineatura, viola il criterio WCAG 1.4.1. Gli utenti con daltonismo potrebbero non essere in grado di identificare il link.\n⚠️ Contrasto Minimo: ATTENZIONE. Un colore blu chiaro (#3366FF) su sfondo bianco (#FFFFFF) ha un rapporto di contrasto di circa 2.8:1, che è inferiore al minimo richiesto di 4.5:1 dal livello AA delle WCAG per il testo normale.\n	Raccomandazioni (Non Vincolanti):\n	Mantenere sempre la sottolineatura per i link all'interno di un corpo di testo.\n	Utilizzare un colore per i link che garantisca un rapporto di contrasto di almeno 4.5:1 con lo sfondo.\n	Disclaimer: Questo è un controllo automatico e non costituisce una valutazione di conformità completa. Si raccomanda un'analisi tecnica e la consultazione di un esperto.`,},
+	{ 
+	profile: "Verificatore di Comunicazioni KYC/AML Anti-Frodi", 
+	title: "Friction Compliance: Istruzioni di Due Diligence Ambigue", 
+	context: "Una comunicazione a un cliente B2B ad alto rischio per la procedura di onboarding è vaga sui documenti necessari, creando attrito per il cliente e aumentando il rischio di una due diligence incompleta per l'azienda.", 
+	input: "Per completare l'onboarding, potrebbe essere richiesta documentazione supplementare e accertamenti aggiuntivi in base alla nostra valutazione del rischio. Vi informeremo se i documenti che avete caricato sono sufficienti.", 
+	output:`### Punteggio di Rischio Conformità: MEDIO\n	Risultati del Controllo:\n⚠️ Trasparenza Transazioni: ATTENZIONE. La comunicazione è reattiva ("Vi informeremo se...") invece che proattiva. Un linguaggio vago come "potrebbe essere richiesta documentazione supplementare" crea incertezza e ritardi.\n✅ Aderenza a Procedure Standard: OK. Il testo menziona correttamente una "valutazione del rischio" e "accertamenti aggiuntivi", che sono in linea con le procedure standard di Enhanced Due Diligence (EDD).\n	Raccomandazioni (Non Vincolanti):\n	Riformulare la comunicazione per essere proattiva e specifica. Esempio: "Dato che la vostra struttura societaria rientra nei profili ad alto rischio, vi chiediamo di fornire fin da ora i seguenti documenti aggiuntivi: [Elenco Documenti]."\n	Disclaimer: Questo è un controllo automatico e non sostituisce un sistema di monitoraggio AML completo. Si raccomanda di consultare un esperto di compliance.`,},
+	{ 
+	profile: "Analizzatore di Disclaimer e Condizioni d'Uso E-commerce", 
+	title: "Il Bottone Sbagliato: Nullità del Contratto di Vendita Online", 
+	context: "Il pulsante finale di un carrello e-commerce riporta la dicitura 'Prosegui alla Conferma'. Questa etichetta ambigua non esplicita l'obbligo di pagamento e, secondo la Direttiva sui Diritti dei Consumatori (CRD), può rendere il contratto nullo.", 
+	input: 'Testo sul pulsante di acquisto finale nel funnel: "Prosegui alla Conferma dell\'Ordine"', 
+	output:`### Punteggio di Rischio Conformità: ALTO\n	Risultati del Controllo:\n❌ Informativa Precontrattuale: RISCHIO ALTO. Il testo del pulsante "Prosegui alla Conferma dell'Ordine" non soddisfa il requisito della Direttiva CRD, che impone un'etichetta inequivocabile sull'obbligo di pagamento (es. "Acquista Ora" o "Paga Adesso").\n✅ Gestione Diritto di Recesso: OK. Il testo del pulsante non riguarda il diritto di recesso.\n✅ Chiarezza sulla Garanzia: OK. Il testo del pulsante non riguarda la garanzia.\n	Raccomandazioni (Non Vincolanti):\n	Sostituire immediatamente il testo del pulsante con una formulazione conforme, come "Acquista Ora", "Paga Adesso" o "Ordina con Obbligo di Pagare".\n	Disclaimer: Questo è un controllo automatico e non costituisce una consulenza legale. Si raccomanda di consultare un professionista per una valutazione definitiva.`,	}
+];
+
 
 export default function UseCasesPage() {
-  const [activeTab, setActiveTab] = useState<'validator' | 'interpreter'>('validator');
+  const [activeTab, setActiveTab] = useState<'validator' | 'interpreter' | 'compliance'>('validator');
   
-  const [selectedUseCase, setSelectedUseCase] = useState<(typeof validatorUseCases[0] | typeof interpreterUseCases[0]) | null>(
-    validatorUseCases.length > 0 ? validatorUseCases[0] : null
-  );
+  type UseCase = (typeof validatorUseCases)[0] | (typeof interpreterUseCases)[0] | (typeof complianceUseCases)[0];
 
-  const handleTabChange = (tab: 'validator' | 'interpreter') => {
-    setActiveTab(tab);
-    if (tab === 'validator' && validatorUseCases.length > 0) {
-      setSelectedUseCase(validatorUseCases[0]);
-    } else if (tab === 'interpreter' && interpreterUseCases.length > 0) {
-      setSelectedUseCase(interpreterUseCases[0]);
-    } else {
-      setSelectedUseCase(null);
-    }
-  };
+	const [selectedUseCase, setSelectedUseCase] = useState<UseCase | null>(
+	  validatorUseCases.length > 0 ? validatorUseCases[0] : null
+	)
 
-  const currentUseCases = activeTab === 'validator' ? validatorUseCases : interpreterUseCases;
+  const handleTabChange = (tab: 'validator' | 'interpreter' | 'compliance') => {
+	  setActiveTab(tab);
+	  if (tab === 'validator' && validatorUseCases.length > 0) {
+		setSelectedUseCase(validatorUseCases[0]); // Seleziona il primo elemento
+	  } else if (tab === 'interpreter' && interpreterUseCases.length > 0) {
+		setSelectedUseCase(interpreterUseCases[0]); // Seleziona il primo elemento
+	  } else if (tab === 'compliance' && complianceUseCases.length > 0) {
+		setSelectedUseCase(complianceUseCases[0]); // Seleziona il primo elemento
+	  } else {
+		setSelectedUseCase(null);
+	  }
+	};
+
+  const currentUseCases = activeTab === 'validator' 
+    ? validatorUseCases 
+    : activeTab === 'interpreter' 
+    ? interpreterUseCases 
+    : complianceUseCases;
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-gray-900 p-8 text-white">
@@ -248,6 +320,12 @@ export default function UseCasesPage() {
           >
             Interpreter
           </button>
+		  <button
+			onClick={() => handleTabChange('compliance')}
+			className={`px-8 py-3 text-xl font-semibold transition-colors ${activeTab === 'compliance' ? 'border-b-2 border-yellow-500 text-white' : 'text-gray-400 hover:text-white'}`}
+          >
+			Compliance
+	      </button>
         </div>
 
         {/* Selettore dei Profili */}
@@ -258,7 +336,11 @@ export default function UseCasesPage() {
               <button
                 key={index}
                 onClick={() => setSelectedUseCase(uc)}
-                className={`px-6 py-3 rounded-full text-lg font-semibold transition-all shadow-md ${selectedUseCase?.profile === uc.profile ? (activeTab === 'validator' ? 'bg-blue-600' : 'bg-green-600') + ' text-white transform scale-105' : 'bg-gray-700 text-gray-200 hover:bg-gray-600'}`}
+                className={`px-6 py-3 rounded-full text-lg font-semibold transition-all shadow-md ${
+					selectedUseCase?.profile === uc.profile
+						? (activeTab === 'validator' ? 'bg-blue-600' : activeTab === 'interpreter' ? 'bg-green-600' : 'bg-yellow-600') + ' text-white transform scale-105'
+						: 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+				}`}
               >
                 {uc.profile}
               </button>
@@ -299,17 +381,19 @@ export default function UseCasesPage() {
 			  </div>
 			</div>
 
-              {/* Report di Qualità */}
-              <div className="mt-8 p-6 rounded-xl bg-gray-900 border border-gray-700 shadow-md">
-                <h3 className="text-2xl font-semibold text-green-400 mb-4 text-center">Controllo di Qualità AI²™</h3>
-                <div className="flex items-center justify-center text-center mb-4">
-                  <p className="text-6xl font-bold text-green-400">{selectedUseCase.qualityScore}</p>
-                  <p className="ml-2 text-2xl text-gray-400">/ 100</p>
-                </div>
-                <p className="text-gray-300 italic text-center">
-                  {selectedUseCase.reasoning}
-                </p>
-              </div>
+              {/* Report di Qualità (mostrato solo se la tab non è 'compliance') */}
+				{activeTab !== 'compliance' && selectedUseCase && 'qualityScore' in selectedUseCase && (
+					<div className="mt-8 p-6 rounded-xl bg-gray-900 border border-gray-700 shadow-md">
+						<h3 className="text-2xl font-semibold text-green-400 mb-4 text-center">Controllo di Qualità AI²™</h3>
+						<div className="flex items-center justify-center text-center mb-4">
+							<p className="text-6xl font-bold text-green-400">{selectedUseCase.qualityScore}</p>
+							<p className="ml-2 text-2xl text-gray-400">/ 100</p>
+						</div>
+						<p className="text-gray-300 italic text-center">
+							{selectedUseCase.reasoning}
+						</p>
+					</div>
+				)}
             </div>
           </section>
         )}

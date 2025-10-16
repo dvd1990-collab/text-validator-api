@@ -30,6 +30,19 @@ export default function TextValidatorAIPage() {
     { name: "Analista Debiti/Liquidità", description: "Calcola il capitale circolante e analizza i rischi di liquidità." },
     { name: "Spiega in Parole Semplici", description: "Trasforma documenti complessi in linguaggio manageriale chiaro." },
   ];
+  
+  const complianceProfiles = [
+	{ name: "Analizzatore GDPR per Comunicazioni Marketing", description: "Verifica che le tue email e pop-up rispettino i requisiti di consenso e informativa del GDPR." },
+	{ name: "Verificatore Anti-Bias per Annunci di Lavoro", description: "Identifica linguaggio potenzialmente discriminatorio nelle offerte di lavoro per genere, età o altri bias." },
+	{ name: "Checker per Disclaimer Finanziari", description: "Controlla che le comunicazioni su prodotti di investimento includano i disclaimer di rischio obbligatori." },
+	{ name: "Validatore di Claim Pubblicitari", description: "Segnala affermazioni iperboliche o non comprovabili che potrebbero essere contestate come pubblicità ingannevole." },
+	{ name: "Revisore di Clausole per Termini di Servizio", description: "Analizza clausole per assicurare che spieghino in modo chiaro le conseguenze di un'azione per l'utente." },
+	{ name: "Analizzatore di Green Claims (CSRD)", description: "Verifica che le dichiarazioni ambientali non siano generiche o ingannevoli (anti-greenwashing)." },
+	{ name: "Revisore di Comunicazioni Mediche", description: "Controlla l'uso corretto della terminologia in ambito telemedicina e previene claim non autorizzati." },
+	{ name: "Checker di Accessibilità Testuale (WCAG)", description: "Verifica requisiti testuali per la compatibilità con screen reader, come alt-text e link descrittivi." },
+	{ name: "Verificatore Comunicazioni KYC/AML", description: "Analizza report interni per identificare pattern testuali sospetti o mancanze informative anti-riciclaggio." },
+	{ name: "Analizzatore Disclaimer E-commerce", description: "Garantisce che i termini di garanzia e recesso distinguano correttamente tra clienti B2B e B2C." },
+];
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-gray-900 p-8 text-white">
@@ -131,6 +144,20 @@ export default function TextValidatorAIPage() {
             ))}
           </div>
         </section>
+		
+		 {/* --- NUOVA SEZIONE PER IL COMPLIANCE CHECKR --- */}
+		<section className="py-16">
+		  <h2 className="text-4xl font-bold text-center text-yellow-400 mb-4">Compliance Checkr</h2>
+		  <p className="text-lg text-center text-gray-400 mb-12 max-w-2xl mx-auto">Mitiga i rischi. Esegui un pre-screening normativo per identificare potenziali problemi di conformità prima della pubblicazione.</p>
+		  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+			{complianceProfiles.map((profile, index) => (
+			  <div key={`comp-${index}`} className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+				<h3 className="text-2xl font-semibold text-white mb-3">{profile.name}</h3>
+				<p className="text-gray-300">{profile.description}</p>
+			  </div>
+			))}
+		  </div>
+		</section>
       </div>
     </main>
   );

@@ -35,6 +35,9 @@ PLANS = {
         "interpreter": {
             "allowed_profiles": ["Spiega in Parole Semplici"],
             "quality_check": False
+        },
+        "compliance_checkr": {
+            "enabled": True 
         }
     },
     "starter": {
@@ -47,6 +50,9 @@ PLANS = {
         "interpreter": {
             "allowed_profiles": "all",
             "quality_check": True
+        },
+        "compliance_checkr": {
+            "enabled": True 
         }
     },
     "pro": {
@@ -59,6 +65,9 @@ PLANS = {
         "interpreter": {
             "allowed_profiles": "all",
             "quality_check": True
+        },
+        "compliance_checkr": {
+            "enabled": True 
         }
     },
     "admin": {
@@ -71,6 +80,9 @@ PLANS = {
         "interpreter": {
             "allowed_profiles": "all",
             "quality_check": True
+        },
+        "compliance_checkr": {
+            "enabled": True 
         }
     }
 }
@@ -134,6 +146,7 @@ class UserStatusResponse(BaseModel):
     tier: str
     validator_profiles: list[str] | str
     interpreter_profiles: list[str] | str
+    compliance_access: bool
 # === FINE BLOCCO DA AGGIUNGERE ===
 
 class ValidationResponse(BaseModel):
@@ -144,6 +157,10 @@ class ValidationResponse(BaseModel):
 class InterpretationResponse(BaseModel):
     interpreted_text: str
     quality_report: QualityReport | None = None
+    usage: UsageInfo
+
+class ComplianceResponse(BaseModel):
+    compliance_report: str
     usage: UsageInfo
 
 limiter = Limiter(key_func=get_remote_address)
@@ -356,6 +373,80 @@ async def interpret_document(request: Request, payload: TextInput, authorization
         usage=UsageInfo(count=new_count, limit=shared_limit)
     )
 
+
+@app.post("/compliance-check", response_model=ComplianceResponse, tags=["Compliance Checkr"])
+@limiter.limit("5/minute")
+async def compliance_check(request: Request, payload: TextInput, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token di autenticazione mancante.")
+
+    # ... la logica di validazione del token e recupero profilo è IDENTICA a /validate ...
+    clerk_jwt_token_string = authorization.split(" ")[1]
+    user_id = None
+    try:
+        # Logica di validazione token...
+        jwks_response = requests.get(CLERK_JWKS_URL)
+        jwks_response.raise_for_status()
+        jwks_data = jwks_response.json()
+        header = jwt.get_unverified_header(clerk_jwt_token_string)
+        public_key = None
+        for key_data in jwks_data["keys"]:
+            if key_data["kid"] == header["kid"]:
+                public_key = jwk.construct(key_data)
+                break
+        if not public_key: raise Exception("Chiave pubblica non trovata.")
+        decoded_token = jwt.decode(clerk_jwt_token_string, public_key, algorithms=["RS256"], options={"verify_signature": True, "verify_aud": False, "verify_iss": False})
+        user_id = decoded_token.get("sub")
+        if not user_id: raise Exception("ID utente non trovato.")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Validazione token fallita: {str(e)}")
+
+    profile_res = supabase.table('profiles').select('*').eq('id', user_id).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=500, detail="Profilo utente non trovato.")
+    profile = profile_res.data[0]
+    
+    # --- LOGICA DI GESTIONE PIANI PER COMPLIANCE CHECKR ---
+    user_tier_name = profile.get('subscription_tier', 'free')
+    user_role = profile.get('role', 'user')
+    plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
+    
+    if not plan["compliance_checkr"]["enabled"]:
+        raise HTTPException(status_code=403, detail="Il Compliance Checkr non è incluso nel tuo piano.")
+    # 0. Verifica lunghezza massima dell'input
+    max_length = plan.get("max_input_length")
+    if max_length is not None and len(payload.text) > max_length:
+        raise HTTPException(
+            status_code=413, # 413 Payload Too Large
+            detail=f"Il documento inserito ({len(payload.text)} caratteri) supera il limite di {max_length} caratteri consentito per il tuo piano. Esegui l'upgrade per analizzare documenti più lunghi."
+        )
+    # === FINE BLOCCO DA AGGIUNGERE ===
+    # 2. Verifica limite di chiamate condiviso (identica a /validate)
+    shared_limit = plan["shared_limit"]
+    current_count = profile.get('usage_count', 0)
+    if shared_limit != -1:
+        today = str(date.today())
+        if profile.get('last_used_date') != today:
+            current_count = 0
+            supabase.table('profiles').update({'last_used_date': today, 'usage_count': 0}).eq('id', user_id).execute()
+        if current_count >= shared_limit:
+            raise HTTPException(status_code=429, detail=f"Hai superato il limite giornaliero condiviso di {shared_limit} chiamate.")
+    try:
+        compliance_report_text = await ai_core.check_compliance(payload.text, profile_name=payload.profile_name)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore durante l'analisi di conformità: {str(e)}")
+    
+    # --- AGGIORNAMENTO CONTEGGIO ---
+    new_count = current_count + 1
+    if shared_limit != -1:
+        supabase.table('profiles').update({'usage_count': new_count}).eq('id', user_id).execute()
+
+    return ComplianceResponse(
+            compliance_report=compliance_report_text.strip(),
+            usage=UsageInfo(count=new_count, limit=shared_limit)
+        )
+    
+
 @app.post("/webhooks/new-user", include_in_schema=False) # Nascosto dalla documentazione pubblica
 async def handle_new_user_webhook(request: Request, payload: dict, x_webhook_secret: str = Header(None)):
     """
@@ -533,8 +624,10 @@ async def get_user_status(request: Request, authorization: str = Header(None)):
         usage=UsageInfo(count=profile.get('usage_count', 0), limit=plan["shared_limit"]),
         tier=user_tier_name if user_role != 'admin' else 'admin',
         validator_profiles=plan["validator"]["allowed_profiles"],
-        interpreter_profiles=plan["interpreter"]["allowed_profiles"]
+        interpreter_profiles=plan["interpreter"]["allowed_profiles"],
+        compliance_access=plan["compliance_checkr"]["enabled"]
     )
+
 
 if __name__ == "__main__":
     # Legge la porta dalla variabile d'ambiente PORT fornita da Cloud Run

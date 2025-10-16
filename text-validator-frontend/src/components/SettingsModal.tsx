@@ -52,6 +52,10 @@ export default function SettingsModal({ isOpen, onClose, userTier }: SettingsMod
                 <p className="font-semibold text-gray-200">Interpreter Engine:</p>
                 <p className="font-mono text-sm text-blue-300 bg-gray-800 px-2 py-1 rounded">{interpreterEngine}</p>
             </div>
+			 <div className="flex items-center justify-between rounded-lg bg-gray-700 p-3 border border-gray-600">
+            <p className="font-semibold text-gray-200">Compliance Engine:</p>
+            <p className="font-mono ...">Gemini 2.5 Flash</p>
+        </div>
           </div>
         </div>
 

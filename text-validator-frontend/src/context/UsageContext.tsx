@@ -11,6 +11,7 @@ interface UsageContextType {
   validator_profiles: string[] | 'all';
   interpreter_profiles: string[] | 'all';
   fetchUserStatus: () => Promise<void>;
+  complianceAccess: boolean;
 }
 
 const UsageContext = createContext<UsageContextType | undefined>(undefined);
@@ -21,6 +22,7 @@ export const UsageProvider = ({ children }: { children: ReactNode }) => {
   const [userTier, setUserTier] = useState<string>('free');
   const [validator_profiles, setValidatorProfiles] = useState<string[] | 'all'>(['Generico', 'L\'Umanizzatore']);
   const [interpreter_profiles, setInterpreterProfiles] = useState<string[] | 'all'>(['Spiega in Parole Semplici']);
+  const [complianceAccess, setComplianceAccess] = useState<boolean>(false);
 
   const { getToken } = useAuth();
 
@@ -37,12 +39,13 @@ export const UsageProvider = ({ children }: { children: ReactNode }) => {
       setUserTier(data.tier);
       setValidatorProfiles(data.validator_profiles);
       setInterpreterProfiles(data.interpreter_profiles);
+	  setComplianceAccess(data.compliance_access);
     } catch (error) {
       console.error("Errore nel recupero dello stato utente (Context):", error);
     }
   }, [getToken]);
 
-  const value = { usageCount, usageLimit, userTier, validator_profiles, interpreter_profiles, fetchUserStatus };
+  const value = { usageCount, usageLimit, userTier, validator_profiles, interpreter_profiles, fetchUserStatus, complianceAccess };
 
   return (
     <UsageContext.Provider value={value}>
