@@ -10,16 +10,17 @@ import CTOVModal from '@/components/CTOVModal'; // Riutilizziamo il modale
 interface CTOVProfile {
   id: string;
   name: string;
-  mission: string;
-  archetype: string;
-  tone_traits: string[];
-  banned_terms: string[];
+  mission?: string; // Corretto: da 'string' a 'string | undefined'
+  archetype?: string; // Corretto: da 'string' a 'string | undefined'
+  tone_traits?: string[]; // Corretto: da 'string[]' a 'string[] | undefined'
+  banned_terms?: string[]; // Corretto: da 'string[]' a 'string[] | undefined'
 }
 
 export default function ManageVoicesPage() {
   const { ctovProfiles, fetchUserStatus } = useUsage();
   const { getToken } = useAuth();
   
+  // Ora 'profileToEdit' può essere di tipo 'CTOVProfile | null', che è corretto
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profileToEdit, setProfileToEdit] = useState<CTOVProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
