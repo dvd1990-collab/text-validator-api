@@ -1703,7 +1703,7 @@ INTERPRETATO: {interpreted_text}
 # ==============================================================================
 COMPLIANCE_PROMPT_TEMPLATES = {
     # Categoria: Marketing e Comunicazione
-    "Analizzatore GDPR Marketing": {
+    "Analizzatore GDPR Marketing": 
 """
 # RUOLO E OBIETTIVO
 Sei un consulente Data Protection Officer (DPO) specializzato in GDPR per il marketing. Il tuo obiettivo è analizzare un testo di comunicazione marketing (es. email, landing page, cookie banner) e valutare la sua conformità ai principi chiave del GDPR.
