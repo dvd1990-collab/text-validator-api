@@ -15,19 +15,17 @@ const [copyButtonText, setCopyButtonText] = useState('Copia');
 const { complianceAccess, fetchUserStatus } = useUsage();
 const router = useRouter();
 // Array con i 10 nuovi profili di conformità
-const complianceProfileOptions = [
-"Analizzatore GDPR per Comunicazioni Marketing",
-"Verificatore Anti-Bias per Annunci di Lavoro",
-"Checker per Disclaimer Finanziari (MiFID II / CONSOB)",
-"Validatore di Claim Pubblicitari (Anti-False Advertising)",
-"Revisore di Clausole per Termini di Servizio Semplificati",
-"Analizzatore di Green Claims (CSRD/Tassonomia UE)",
-"Revisore di Comunicazioni Mediche e Farmaceutiche",
-"Checker di Accessibilità Testuale Digitale (WCAG 2.1/AGID)",
-"Verificatore di Comunicazioni KYC/AML Anti-Frodi",
-"Analizzatore di Disclaimer e Condizioni d'Uso E-commerce B2B/B2C"
-];
-const [selectedProfile, setSelectedProfile] = useState(complianceProfileOptions[0]);
+const complianceProfileGroups = {
+    "Marketing e Comunicazione": ["Analizzatore GDPR Marketing", "Validatore Claim Pubblicitari", "Analizzatore Disclaimer E-commerce"],
+    "Finanza e Antiriciclaggio (AML)": ["Checker Disclaimer Finanziari", "Verificatore Comunicazioni KYC/AML", "Generatore di Policy AML Interna", "Checker Adeguata Verifica Cliente (KYC)"],
+    "Legale e Contratti": ["Revisore Clausole Termini di Servizio"],
+    "Risorse Umane": ["Verificatore Anti-Bias Annunci Lavoro"],
+    "Sostenibilità (ESG/CSRD)": ["Validatore di Green Claims (CSRD)", "Generatore Report Sostenibilità (VSME)"],
+    "Web e Digitale": ["Checker Accessibilità Testuale (WCAG)"],
+    "Bandi e Finanziamenti": ["Validatore Formale Domanda di Bando"],
+    "Settori Regolamentati": ["Revisore Comunicazioni Mediche"],
+};
+const [selectedProfile, setSelectedProfile] = useState("Analizzatore GDPR Marketing");
 const { isSignedIn, getToken, signOut } = useAuth();
 const handleComplianceCheck = async () => {
 if (!isSignedIn) {
@@ -111,10 +109,10 @@ Esegui l'Upgrade
 }
 // Altrimenti, mostriamo la pagina normale
 return (
-<main className="flex flex-col items-center bg-gray-900 px-4 md:px-8 text-white">
+<main className="flex flex-col items-center bg-gray-900 p-8 text-white">
 <div className="w-full max-w-4xl">
 <header className="mb-8 text-center">
-<h1 className="text-4xl font-extrabold text-yellow-400">Compliance Checkr</h1>
+<h1 className="text-4xl font-extrabold text-yellow-400">Compliance Checkr AI</h1>
 <p className="mt-2 text-lg text-gray-400 font-semibold">
 Verifica i tuoi testi per potenziali rischi di non conformità normativa.
 </p>
@@ -130,13 +128,17 @@ Verifica i tuoi testi per potenziali rischi di non conformità normativa.
               disabled={isLoading}
               className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
           >
-              {complianceProfileOptions.map((profile) => (
-                  <option key={profile} value={profile}>
-                      {profile}
-                  </option>
+              {Object.entries(complianceProfileGroups).map(([groupName, profiles]) => (
+                  <optgroup key={groupName} label={groupName}>
+                      {profiles.map((profile) => (
+                          <option key={profile} value={profile}>
+                              {profile}
+                          </option>
+                      ))}
+                  </optgroup>
               ))}
           </select>
-      </div>
+        </div>
       
 	  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 	    {/* Pannello di Input */}

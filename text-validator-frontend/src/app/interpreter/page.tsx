@@ -21,13 +21,16 @@ export default function InterpreterPage() {
 
   const { interpreter_profiles: allowedProfiles, fetchUserStatus } = useUsage();
 
-  const interpreterProfileOptions = [
-      "Spiega in Parole Semplici", "Analista Contratto di Vendita", "Revisore Contratto di Acquisto",
-      "Estrattore P&L Aziendale", "Analista Bilancio Aziendale", "Sintesi Legale Breve",
-      "Revisore Polizza Assicurativa", "Verificatore Fatture/Bollette",
-      "Estrattore Dati Fatti", "Analista Debiti/Liquidità"
-  ];
-  const [selectedProfile, setSelectedProfile] = useState(interpreterProfileOptions[0]);
+  const interpreterProfileGroups = {
+    "Produttività e Sintesi": ["Spiega in Parole Semplici", "Sintetizzare di Meeting e Trascrizioni"],
+    "Analisi Contratti e Documenti Legali": ["Analista Contratto di Vendita", "Revisore Contratto di Acquisto", "Sintesi Legale Breve", "Revisore Polizza Assicurativa", "Analisi Contratti di Fornitura"],
+    "Analisi Finanziaria e Contabile": ["Estrattore P&L Aziendale", "Analista Bilancio Aziendale", "Verificatore Fatture/Bollette", "Analista Debiti/Liquidità"],
+    "Business Intelligence e Dati": ["Analizzatore di Feedback dei Clienti", "Estrattore di Dati Strutturati", "Sintetizzatore di Ricerche di Mercato"],
+    "Bandi e Finanziamenti": ["Analisi di Capitolati di Gara e Bandi"],
+    "Risorse Umane": ["Assistente Valutazioni Performance", "Generatore di Policy Aziendali Interne", "Scrittore di Manuale del Dipendente"],
+};  
+  
+  const [selectedProfile, setSelectedProfile] = useState("Spiega in Parole Semplici");
 
   const { isSignedIn, getToken, signOut } = useAuth();
   const router = useRouter();
@@ -93,10 +96,10 @@ export default function InterpreterPage() {
   };
   
   return (
-    <main className="flex flex-col items-center bg-gray-900 px-4 md:px-8 text-white">
+    <main className="flex flex-col items-center bg-gray-900 p-8 text-white">
       <div className="w-full max-w-4xl">
           <header className="mb-8 text-center">
-              <h1 className="text-4xl font-extrabold text-blue-400">Interpreter AI</h1>
+              <h1 className="text-4xl font-extrabold text-green-500">Interpreter AI</h1>
               <p className="mt-2 text-lg text-gray-400 font-semibold">
                   Trasforma documenti complessi in sintesi chiare e strutturate.
               </p>
@@ -111,17 +114,20 @@ export default function InterpreterPage() {
                   value={selectedProfile}
                   onChange={(e) => setSelectedProfile(e.target.value)}
                   disabled={isLoading}
-                  className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-green-500 focus:ring-green-500"
               >
-                  {interpreterProfileOptions.map((profile) => {
-                      const isDisabled = !!allowedProfiles && allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
-                      return (
-                          <option key={profile} value={profile} disabled={isDisabled} className={isDisabled ? 'text-gray-500' : ''}>
-                              {profile}
-                              {isDisabled ? ' 🔒 (Upgrade)' : ''}
-                          </option>
-                      );
-                  })}
+                  {Object.entries(interpreterProfileGroups).map(([groupName, profiles]) => (
+                      <optgroup key={groupName} label={groupName}>
+                          {profiles.map((profile) => {
+                              const isDisabled = !!allowedProfiles && allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
+                              return (
+                                  <option key={profile} value={profile} disabled={isDisabled} className={isDisabled ? 'text-gray-500' : ''}>
+                                      {profile} {isDisabled ? '🔒' : ''}
+                                  </option>
+                              );
+                          })}
+                      </optgroup>
+                  ))}
               </select>
           </div>
           

@@ -49,11 +49,11 @@ PLANS = {
         "shared_limit": 10,
         "max_input_length": 10000,
         "validator": {
-            "allowed_profiles": ["Generico", "L'Umanizzatore", "Copywriter Persuasivo", "Revisore Legale/Regolatorio", "Scrittore di Newsletter"],
+            "allowed_profiles": ["Generico", "L'Umanizzatore", "Analista Vantaggio Competitivo (UVP)", "Copywriter Persuasivo", "Scrittore di Newsletter", "Generatore Descrizioni Prodotto E-commerce", "Scrittore Testi per Landing Page", "Redattore di Annunci di Lavoro", "Assistente Valutazioni Performance"],
             "quality_check": True
         },
         "interpreter": {
-            "allowed_profiles": ["Spiega in Parole Semplici", "Analista Contratto di Vendita", "Revisore Contratto di Acquisto", "Estrattore P&L Aziendale", "Analista Bilancio Aziendale"],
+            "allowed_profiles": ["Spiega in Parole Semplici", "Analista Contratto di Vendita", "Revisore Contratto di Acquisto", "Estrattore P&L Aziendale", "Analista Bilancio Aziendale", "Verificatore Fatture/Bollette", "Analizzatore di Feedback dei Clienti", "Sintetizzatore di Meeting e Trascrizioni", "Assistente Valutazioni Performance"],
             "quality_check": True
         },
         "compliance_checkr": {

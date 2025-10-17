@@ -43,12 +43,13 @@ export default function HomePage() {
   const { isSignedIn, getToken, signOut } = useAuth();
   const router = useRouter();
   
-  const standardProfileOptions = [
-      "Generico", "L'Umanizzatore", "PM - Interpretazione Trascrizioni", 
-      "Copywriter Persuasivo", "Revisore Legale/Regolatorio", "Scrittore di Newsletter", 
-      "Social Media Manager B2B", "Comunicatore di Crisi PR", "Traduttore Tecnico IT", 
-      "Specialista Comunicazioni HR", "Ottimizzatore Email di Vendita"
-  ];
+  const validatorProfileGroups = {
+  "Comunicazione e PR": ["Generico", "L'Umanizzatore", "Comunicatore di Crisi PR"],
+  "Marketing e Vendite": ["Copywriter Persuasivo", "Scrittore di Newsletter", "Generatore Descrizioni Prodotto E-commerce", "Scrittore Testi per Landing Page", "Ottimizzatore Email di Vendita", "Social Media Manager B2B"],
+  "Business e Strategia": ["Analista Vantaggio Competitivo (UVP)", "Redattore di Sezioni di Business Plan", "Scrittore di Proposte Commerciali"],
+  "Risorse Umane": ["Redattore di Annunci di Lavoro", "Assistente Valutazioni Performance", "Generatore di Policy Aziendali Interne", "Scrittore di Manuale del Dipendente"],
+  "Documentazione Tecnica e Legale": ["Traduttore Tecnico IT", "Termini e Condizioni E-commerce"],
+};
 
   const handleValidate = async () => {
     if (!isSignedIn) {
@@ -145,48 +146,49 @@ export default function HomePage() {
       <div className="w-full max-w-4xl">
           <header className="mb-8 text-center relative">
               {/* L'header è pulito: ingranaggio e contatore sono gestiti solo dalla Navbar */}
-              <h1 className="text-4xl font-extrabold text-blue-400">Text Validator</h1>
+              <h1 className="text-4xl font-extrabold text-blue-400">Validator AI</h1>
               <p className="mt-2 text-gray-400 font-semibold">
                   Pulisci, normalizza e valida la qualità dei tuoi testi in un solo click.
               </p>
           </header>
 
           <div className="mb-6">
-                <label htmlFor="aiProfile" className="block text-sm font-medium text-gray-300 mb-2">
-                    Seleziona Profilo AI o Voce Personalizzata
-                </label>
-                <select
-                    id="aiProfile"
-                    // Il valore ora è una stringa composta "type:value"
-                    value={`${selectedProfile.type}:${selectedProfile.value}`}
-                    onChange={handleProfileChange}
-                    disabled={isLoading}
-                    className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                    <optgroup label="Profili Standard">
-                        {standardProfileOptions.map((profile) => {
-                            const isDisabled = !!allowedProfiles && allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
-                            return (
-                                <option key={profile} value={`standard:${profile}`} disabled={isDisabled} className={isDisabled ? 'text-gray-500' : ''}>
-                                    {profile} {isDisabled ? '🔒 (Upgrade)' : ''}
-                                </option>
-                            );
-                        })}
-                    </optgroup>
-                    
-                    {ctovAccess && (
-                        <optgroup label="Voci Personalizzate">
-                            {ctovProfiles.map((profile) => (
-                                <option key={profile.id} value={`ctov:${profile.id}`}>
-                                    {profile.name}
-                                </option>
-                            ))}
-                            <option value="create_new" disabled={!canCreateNewVoice} className="text-blue-400 font-semibold">
-                                + Crea Nuova Voce { !canCreateNewVoice && '(Limite raggiunto)'}
-                            </option>
-                        </optgroup>
-                    )}
-                </select>
+              <label htmlFor="aiProfile" className="block text-sm font-medium text-gray-300 mb-2">
+                  Seleziona Profilo AI o Voce Personalizzata
+              </label>
+              <select
+                  id="aiProfile"
+                  value={`${selectedProfile.type}:${selectedProfile.value}`}
+                  onChange={handleProfileChange}
+                  disabled={isLoading}
+                  className="w-full rounded-lg border border-gray-700 bg-gray-900 p-3 text-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                  {Object.entries(validatorProfileGroups).map(([groupName, profiles]) => (
+                      <optgroup key={groupName} label={groupName}>
+                          {profiles.map((profile) => {
+                              const isDisabled = !!allowedProfiles && allowedProfiles !== 'all' && !allowedProfiles.includes(profile);
+                              return (
+                                  <option key={profile} value={`standard:${profile}`} disabled={isDisabled} className={isDisabled ? 'text-gray-500' : ''}>
+                                      {profile} {isDisabled ? '🔒' : ''}
+                                  </option>
+                              );
+                          })}
+                      </optgroup>
+                  ))}
+                  
+                  {ctovAccess && (
+                      <optgroup label="Voci Personalizzate">
+                          {ctovProfiles.map((profile) => (
+                              <option key={profile.id} value={`ctov:${profile.id}`}>
+                                  {profile.name}
+                              </option>
+                          ))}
+                          <option value="create_new" disabled={!canCreateNewVoice} className="text-blue-400 font-semibold">
+                              + Crea Nuova Voce { !canCreateNewVoice && '(Limite raggiunto)'}
+                          </option>
+                      </optgroup>
+                  )}
+              </select>
             </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
