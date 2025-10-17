@@ -16,7 +16,7 @@ const { complianceAccess, fetchUserStatus } = useUsage();
 const router = useRouter();
 // Array con i 10 nuovi profili di conformità
 const complianceProfileGroups = {
-    "Marketing e Comunicazione": ["Analizzatore GDPR Marketing", "Validatore Claim Pubblicitari", "Analizzatore Disclaimer E-commerce"],
+    "Marketing e Comunicazione": ["Analizzatore GDPR per Comunicazioni Marketing", "Validatore Claim Pubblicitari", "Analizzatore Disclaimer E-commerce"],
     "Finanza e Antiriciclaggio (AML)": ["Checker Disclaimer Finanziari", "Verificatore Comunicazioni KYC/AML", "Generatore di Policy AML Interna", "Checker Adeguata Verifica Cliente (KYC)"],
     "Legale e Contratti": ["Revisore Clausole Termini di Servizio"],
     "Risorse Umane": ["Verificatore Anti-Bias Annunci Lavoro"],

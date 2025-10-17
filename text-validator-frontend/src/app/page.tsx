@@ -48,7 +48,7 @@ export default function HomePage() {
   "Marketing e Vendite": ["Copywriter Persuasivo", "Scrittore di Newsletter", "Generatore Descrizioni Prodotto E-commerce", "Scrittore Testi per Landing Page", "Ottimizzatore Email di Vendita", "Social Media Manager B2B"],
   "Business e Strategia": ["Analista Vantaggio Competitivo (UVP)", "Redattore di Sezioni di Business Plan", "Scrittore di Proposte Commerciali"],
   "Risorse Umane": ["Redattore di Annunci di Lavoro", "Assistente Valutazioni Performance", "Generatore di Policy Aziendali Interne", "Scrittore di Manuale del Dipendente"],
-  "Documentazione Tecnica e Legale": ["Traduttore Tecnico IT", "Termini e Condizioni E-commerce"],
+  "Documentazione Tecnica e Legale": ["Traduttore Tecnico IT", "Redattore Termini e Condizioni E-commerce"],
 };
 
   const handleValidate = async () => {

@@ -22,11 +22,11 @@ export default function InterpreterPage() {
   const { interpreter_profiles: allowedProfiles, fetchUserStatus } = useUsage();
 
   const interpreterProfileGroups = {
-    "Produttività e Sintesi": ["Spiega in Parole Semplici", "Sintetizzare di Meeting e Trascrizioni"],
+    "Produttività e Sintesi": ["Spiega in Parole Semplici", "Sintetizzatore di Meeting e Trascrizioni"],
     "Analisi Contratti e Documenti Legali": ["Analista Contratto di Vendita", "Revisore Contratto di Acquisto", "Sintesi Legale Breve", "Revisore Polizza Assicurativa", "Analisi Contratti di Fornitura"],
     "Analisi Finanziaria e Contabile": ["Estrattore P&L Aziendale", "Analista Bilancio Aziendale", "Verificatore Fatture/Bollette", "Analista Debiti/Liquidità"],
     "Business Intelligence e Dati": ["Analizzatore di Feedback dei Clienti", "Estrattore di Dati Strutturati", "Sintetizzatore di Ricerche di Mercato"],
-    "Bandi e Finanziamenti": ["Analisi di Capitolati di Gara e Bandi"],
+    "Bandi e Finanziamenti": ["Analista di Capitolati di Gara e Bandi"],
     "Risorse Umane": ["Assistente Valutazioni Performance", "Generatore di Policy Aziendali Interne", "Scrittore di Manuale del Dipendente"],
 };  
   

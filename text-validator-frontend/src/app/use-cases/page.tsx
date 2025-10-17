@@ -9,18 +9,113 @@ const validatorUseCases = [
       profile: "Scrittore di Proposte Commerciali",
       title: "XXXXX",
       context: "Marco, titolare di una piccola agenzia di software, deve inviare una proposta a un potenziale cliente, Rossi Cucine, per la realizzazione di un nuovo sistema di gestione magazzino. Ha raccolto degli appunti disordinati dopo una telefonata e deve trasformarli in una proposta professionale e persuasiva.",
-      input: "Cliente: Rossi Cucine, azienda di medie dimensioni. Problema: il loro sistema attuale è vecchio, basato su Excel, lento. Perdono tempo, fanno errori di inventario. Hanno bisogno di qualcosa di moderno. La nostra soluzione: software custom basato su cloud. Accessibile da ovunque. Funzioni da includere: gestione anagrafica prodotti, carico/scarico magazzino con lettore barcode, reportistica inventario in tempo reale, alert per scorte minime. Costi: sviluppo circa 15.000 euro. Poi canone di mantenimento di 250 euro/mese per hosting, backup e supporto. Tempistiche: 8 settimane per lo sviluppo, poi una settimana di formazione in loco. Perché noi: siamo specializzati in soluzioni per PMI, abbiamo già fatto un lavoro simile per Bianchi Arredamenti. Dobbiamo convincerli che è un investimento, non un costo. Parlare del ROI: risparmio di tempo per i magazzinieri (stimato 20%), riduzione errori di inventario (-90%). Prossimi passi: inviare la proposta e fissare una call per la demo.",      output: "",
-      qualityScore: "01",
-      reasoning: ""
+      input: "Cliente: Rossi Cucine, azienda di medie dimensioni. Problema: il loro sistema attuale è vecchio, basato su Excel, lento. Perdono tempo, fanno errori di inventario. Hanno bisogno di qualcosa di moderno. La nostra soluzione: software custom basato su cloud. Accessibile da ovunque. Funzioni da includere: gestione anagrafica prodotti, carico/scarico magazzino con lettore barcode, reportistica inventario in tempo reale, alert per scorte minime. Costi: sviluppo circa 15.000 euro. Poi canone di mantenimento di 250 euro/mese per hosting, backup e supporto. Tempistiche: 8 settimane per lo sviluppo, poi una settimana di formazione in loco. Perché noi: siamo specializzati in soluzioni per PMI, abbiamo già fatto un lavoro simile per Bianchi Arredamenti. Dobbiamo convincerli che è un investimento, non un costo. Parlare del ROI: risparmio di tempo per i magazzinieri (stimato 20%), riduzione errori di inventario (-90%). Prossimi passi: inviare la proposta e fissare una call per la demo.",      
+	  output: `# PROPOSTA COMMERCIALE: Ottimizzazione Gestione Magazzino e Inventario per Rossi Cucine
+
+**Data:** [Inserire Data]
+**A:** Rossi Cucine
+**Oggetto:** Proposta per la Digitalizzazione del Sistema Gestionale e il Miglioramento dell'Efficienza Operativa
+
+## 1. Introduzione e Comprensione del Problema
+
+Comprendiamo perfettamente che Rossi Cucine, operando in un mercato dinamico come quello dell'arredamento, necessiti di strumenti agili per mantenere la propria competitività.
+
+Abbiamo analizzato le sfide operative attuali, in particolare:
+*   **Sistema Datato e Inefficiente:** L'affidamento a strumenti legacy basati su fogli di calcolo (Excel) sta rallentando i processi quotidiani.
+*   **Rischio di Errore Umano:** La gestione manuale dell'inventario comporta un elevato rischio di discrepanze tra stock fisico e registrato.
+*   **Perdita di Produttività:** Il tempo speso per aggiornamenti manuali e la ricerca di dati sottrae risorse preziose al personale operativo.
+
+L'obiettivo primario è sostituire questo ambiente frammentato con una **piattaforma centralizzata, moderna e accessibile** che garantisca precisione e velocità nelle operazioni di magazzino.
+
+## 2. La Nostra Soluzione Proposta: Piattaforma Gestionale Cloud Custom
+
+Proponiamo lo sviluppo di un **Software Gestionale Customizzato, basato su tecnologia Cloud**, progettato specificamente per le esigenze di magazzino e inventario di Rossi Cucine. Questa soluzione sarà accessibile in qualsiasi momento e da qualsiasi dispositivo connesso, garantendo flessibilità operativa.
+
+### Benefici Chiave Attesi (ROI Immediato)
+
+L'adozione di questo sistema si traduce direttamente in un ritorno sull'investimento misurabile:
+
+*   **Aumento dell'Efficienza:** Stimiamo un **risparmio di tempo operativo pari al 20%** per il personale di magazzino grazie alla digitalizzazione dei flussi di lavoro.
+*   **Accuratezza dell'Inventario:** Prevediamo una **riduzione degli errori di inventario superiore al 90%**, eliminando le discrepanze critiche.
+*   **Accessibilità Totale:** Gestione delle operazioni da remoto grazie all'architettura Cloud.
+*   **Decisioni Basate sui Dati:** Disponibilità immediata di dati affidabili per la pianificazione degli acquisti e della produzione.
+
+### Funzionalità Principali Incluse
+
+Il sistema sarà dotato delle seguenti funzionalità essenziali per il vostro contesto:
+
+1.  **Anagrafica Prodotti Centralizzata:** Gestione completa e strutturata di tutti i codici e le specifiche dei prodotti.
+2.  **Gestione Movimenti Magazzino Ottimizzata:** Processi di carico e scarico integrati e velocizzati tramite l'utilizzo di **lettori barcode**.
+3.  **Inventario in Tempo Reale:** Dashboard e reportistica aggiornata istantaneamente sulla situazione delle scorte.
+4.  **Sistema di Allerta Proattivo:** Notifiche automatiche per il raggiungimento delle **scorte minime** (Reorder Point).
+
+## 3. Dettagli dell'Offerta e Piano di Lavoro
+
+La nostra metodologia è focalizzata su una consegna rapida e un'implementazione mirata, garantendo che siate operativi nel minor tempo possibile.
+
+| Fase | Attività Principali | Durata Stimata |
+| :--- | :--- | :--- |
+| **Fase 1: Analisi e Design** | Definizione dettagliata delle specifiche funzionali e UI/UX. | 1 Settimana |
+| **Fase 2: Sviluppo Core** | Implementazione del database, moduli anagrafica e gestione barcode. | 5 Settimane |
+| **Fase 3: Testing e Deployment** | Test integrati, migrazione dati (se necessario) e messa in produzione. | 2 Settimane |
+| **Fase 4: Formazione e Go-Live** | Formazione intensiva del personale in loco e supporto immediato. | 1 Settimana |
+| **Tempo Totale Stimato:** | | **8 Settimane di Sviluppo + 1 Settimana di Formazione** |
+
+## 4. Investimento Proposto
+
+L'investimento è strutturato in due componenti: un costo iniziale per lo sviluppo del software custom e un canone ricorrente per la sua manutenzione e il supporto operativo.
+
+| Descrizione Costo | Dettaglio | Importo (IVA Esclusa) |
+| :--- | :--- | :--- |
+| **Sviluppo Soluzione Custom** | Progettazione, sviluppo, integrazione delle funzionalità descritte e implementazione iniziale. | **€ 15.000,00** (Una Tantum) |
+| **Canone di Mantenimento e Supporto** | Hosting su infrastruttura Cloud sicura, backup giornalieri, aggiornamenti di sicurezza e supporto tecnico H24/7. | **€ 250,00 / Mese** (Ricorrente) |
+
+**Nota sull'Investimento:** Questo progetto rappresenta un investimento strategico mirato a trasformare un centro di costo (la gestione inefficiente degli errori e del tempo) in un fattore di vantaggio competitivo.
+
+## 5. Perché Scegliere Noi e Prossimi Passi
+
+Siamo partner specializzati nell'offrire soluzioni tecnologiche scalabili e concrete per le Piccole e Medie Imprese. La nostra esperienza pregressa, inclusi progetti di successo nel settore dell'arredamento (come dimostrato dal lavoro svolto per **Bianchi Arredamenti**), assicura che comprendiamo le vostre specificità operative e le sfide logistiche uniche.
+
+Il nostro approccio è focalizzato sul **risultato tangibile**, assicurando che il software non sia solo installato, ma effettivamente adottato per generare il ROI promesso.
+
+### Prossimi Passi Consigliati
+
+Per procedere e visualizzare concretamente come il sistema funzionerà all'interno del vostro contesto:
+
+1.  **Accettazione della Proposta:** Conferma formale del nostro accordo.
+2.  **Pianificazione Kick-Off:** Definizione del calendario di avvio e pianificazione della prima riunione di analisi dettagliata (Fase 1).
+3.  **Sessione di Demo Personalizzata:** Vi invitiamo a fissare una breve call di approfondimento dove potremo mostrarvi un prototipo interattivo delle funzionalità chiave.
+
+Siamo a vostra completa disposizione per discutere questa proposta e rispondere a qualsiasi domanda. Attendiamo il vostro riscontro per iniziare il percorso verso l'efficienza operativa.`,
+qualityScore: 98,
+reasoning: `La trasformazione è eccellente e trasforma un riassunto di appunti tecnici in una proposta commerciale professionale, persuasiva e ben strutturata. Ha pienamente soddisfatto tutti i criteri richiesti. 1. **Focalizzazione sul Cliente**: Ottima. Il testo inizia immediatamente riconoscendo i problemi del cliente (sistema datato, rischio errori, perdita di produttività) e lega le funzionalità ai benefici misurabili (ROI al 20% di risparmio di tempo, -90% errori), trasformando le caratteristiche in valore per Rossi Cucine. 2. **Struttura Persuasiva**: La struttura è impeccabile: introduzione/problema -> soluzione/benefici (ROI) -> funzionalità -> piano di lavoro -> costi -> prova sociale/next steps. È un percorso logico che guida il lettore. 3. **Chiarezza dell'Offerta e dei Costi**: Molto chiara. I costi sono tabellati in modo trasparente (una tantum vs ricorrente) e le tempistiche sono suddivise in fasi logiche con una chiara distinzione tra sviluppo e formazione. 4. **Professionalità e Call-to-Action**: Il tono è estremamente professionale. La sezione 'Prossimi Passi' è chiara, specifica le azioni richieste (Accettazione, Pianificazione, Demo) e fornisce un invito all'azione diretto.`
     },
 	{
       profile: "Comunicatore di Crisi PR",
       title: "XXXXX",
       context: "VerdeBio, una PMI che produce alimenti biologici, ha scoperto una contaminazione accidentale da un allergene non dichiarato (arachidi) in un lotto di barrette energetiche. Devono scrivere un comunicato stampa urgente per informare i clienti e gestire la crisi reputazionale.",
       input: "URGENTE: Dobbiamo comunicare subito il problema con le barrette Energia Pura. Lotto #24-A58. C'è stata una contaminazione incrociata con arachidi. Non è scritto sull'etichetta. È un disastro. Dobbiamo ritirare il prodotto. Scrivi qualcosa da mettere sul sito e da mandare ai giornali. Dobbiamo dire che ci dispiace molto, è la prima volta che succede. La sicurezza dei clienti è la nostra priorità. Chi ha comprato il lotto può riportarlo in negozio per un rimborso completo o una sostituzione. Abbiamo già bloccato la produzione e stiamo investigando internamente per capire come sia potuto succedere. Non usiamo un tono allarmistico ma dobbiamo essere chiari. Metti un numero di telefono del servizio clienti per chi ha domande. Speriamo che la gente capisca che siamo un'azienda seria e che è stato un incidente isolato.",
-      output: "",
-      qualityScore: "01",
-      reasoning: ""
+      output: `Siamo profondamente dispiaciuti e vogliamo affrontare immediatamente la preoccupazione dei nostri consumatori riguardo al prodotto "Energia Pura". La sicurezza e la salute dei nostri clienti sono la nostra priorità assoluta.
+
+Abbiamo identificato un potenziale problema di contaminazione incrociata con tracce di arachidi in un lotto specifico di barrette "Energia Pura", identificato con il codice Lotto #24-A58. Queste tracce non erano dichiarate sull'etichettatura del prodotto. Riconosciamo la gravità di questa omissione e ci scusiamo incondizionatamente per il rischio che questo può aver comportato per i consumatori, in particolare quelli con allergie.
+
+**Azioni Immediate Intraprese:**
+
+1.  **Richiamo Volontario del Prodotto:** Abbiamo immediatamente avviato il ritiro volontario da tutti i canali di distribuzione del Lotto #24-A58.
+2.  **Sospensione Produzione:** Abbiamo sospeso la produzione per riesaminare e rafforzare rigorosamente i nostri protocolli di sicurezza e prevenzione della contaminazione incrociata.
+3.  **Indagine Approfondita:** È stata avviata un'indagine interna completa per comprendere l'origine esatta di questa anomalia e assicurare che vengano prese misure definitive per evitare che situazioni simili si ripetano in futuro.
+
+**Supporto ai Consumatori:**
+
+Invitiamo tutti i consumatori che hanno acquistato barrette "Energia Pura" appartenenti al Lotto #24-A58 a non consumarle. È possibile restituire il prodotto presso il punto vendita per ricevere un rimborso completo o una sostituzione con un prodotto alternativo.
+
+Per qualsiasi domanda, chiarimento o supporto immediato, è attiva una linea dedicata del nostro Servizio Clienti al numero [INSERIRE NUMERO DI TELEFONO].
+
+Siamo un'azienda impegnata nella qualità e nella fiducia dei nostri clienti. Stiamo gestendo questa situazione con la massima serietà e trasparenza, e ci impegniamo a ripristinare la fiducia attraverso azioni concrete e rigorose revisioni operative.
+
+Per aggiornamenti ufficiali sulla risoluzione della situazione, vi preghiamo di fare riferimento esclusivamente al nostro sito web aziendale.`,
+qualityScore: 95,
+reasoning: `La trasformazione dal testo originale (un insieme di istruzioni e appunti interni) al testo revisionato è eccellente e trasforma efficacemente la confusione interna in una comunicazione di crisi pubblica professionale. Il testo revisionato eccelle nell'Empatia e Tono, usando espressioni come "profondamente dispiaciuti" e "priorità assoluta". La Trasparenza è massima, chiarendo esattamente il problema (contaminazione da arachidi, omissione sull'etichetta) e il lotto specifico. L'Orientamento all'Azione è chiarissimo, strutturato in punti numerati (richiamo, sospensione produzione, indagine). Infine, l'Efficacia Strategica è elevata: riconosce l'errore, si scusa incondizionatamente, fornisce canali di supporto chiari e riafferma l'impegno per la fiducia, mitigando così i danni reputazionali meglio di quanto non potesse fare il messaggio originale.`
     },
 	{
       profile: "Redattore Termini e Condizioni E-commerce",
@@ -36,18 +131,73 @@ const validatorUseCases = [
       title: "XXXXX",
       context: "Una startup fintech, PayFast, sta lanciando un nuovo servizio di POS mobile per piccoli commercianti. Devono creare il testo per una landing page che spinga i visitatori a richiedere una demo gratuita.",
       input: "Titolo: qualcosa tipo Accetta pagamenti ovunque con PayFast. Target: piccoli negozianti, artigiani, liberi professionisti. Prodotto: un piccolo lettore di carte che si collega allo smartphone via Bluetooth. Problema che risolviamo: i POS tradizionali sono costosi, hanno canoni fissi e sono ingombranti. La nostra soluzione: nessun canone fisso, paghi solo una piccola commissione (1.5%) quando incassi. Benefici: economico, portatile, facile da usare. Come funziona: ordini il lettore, scarichi l'app, lo colleghi e inizi a incassare. Prova sociale: mettere una citazione di un cliente beta, tipo Finalmente un POS semplice e senza costi fissi! - Marco, Fioraio. Offerta: demo gratuita del servizio. CTA: Richiedi la tua Demo Gratuita. Dobbiamo far capire che è la soluzione perfetta per chi incassa in mobilità o ha volumi bassi. Menzionare che accettiamo tutte le carte: Visa, Mastercard, Amex.",
-      output: "",
-      qualityScore: "01",
-      reasoning: ""
+      output: `# Headline Principale
+**Dimentica Canoni Fissi: Accetta Pagamenti con Carta Ovunque, Pagando Solo Quando Incassi!**
+
+# Sottotitolo
+Il lettore di carte Bluetooth portatile che trasforma il tuo smartphone nel tuo POS definitivo. Ideale per artigiani, professionisti e piccoli negozi con bassi volumi.
+
+# Introduzione (Il Problema)
+Sei stanco di POS ingombranti, contratti vincolanti e canoni fissi mensili che prosciugano i tuoi guadagni anche nei giorni "morti"? Sai che i metodi tradizionali ti costringono a pagare, indipendentemente dal fatto che tu abbia venduto qualcosa o meno? Per chi lavora in mobilità o gestisce un piccolo volume, questa struttura è semplicemente insostenibile.
+
+# La Soluzione
+Ti presentiamo **PayFast**, il sistema di pagamento mobile creato su misura per chi vuole flessibilità e trasparenza. Collega il lettore al tuo smartphone e inizia ad accettare pagamenti in pochi secondi, senza sorprese in fattura.
+
+*   **Costi Zero Fissi:** Nessun canone mensile, nessun costo di attivazione nascosto.
+*   **Commissione Trasparente:** Paghi solo l'1.5% su ogni singola transazione incassata.
+*   **Portabilità Massima:** Piccolo, leggero e si collega via Bluetooth. Porta il tuo business dove sono i tuoi clienti.
+*   **Accetta Tutto:** Supportiamo tutte le principali carte di credito e debito: Visa, Mastercard e American Express.
+*   **Configurazione Lampo:** Ordini il dispositivo, scarichi l'app gratuita, colleghi e sei operativo in 5 minuti.
+
+# Prova Sociale
+"Finalmente un POS semplice, economico e senza costi fissi! Da quando uso PayFast ho incrementato le vendite perché i clienti pagano più volentieri. Un risparmio enorme per la mia piccola attività." - Marco Rossi, Titolare "Fiori di Marco".
+
+# Call-to-Action (CTA) Finale
+**Smetti di pagare per non vendere. Inizia oggi a usare solo ciò che guadagni!**
+
+**Richiedi la Tua Demo Gratuita di PayFast Ora**`,
+qualityScore: 95,
+reasoning: `La trasformazione è eccellente. La Headline è molto più forte, focalizzandosi immediatamente sul beneficio chiave (zero canoni fissi) e sulla soluzione (pagare solo quando incassi). Il testo revisionato segue perfettamente un flusso persuasivo logico (Problema -> Soluzione -> Benefici/Caratteristiche -> Prova Sociale -> CTA). Vengono inclusi tutti gli elementi richiesti: la chiarezza sulla commissione dell'1.5%, l'accettazione di tutte le carte (Visa, MC, Amex) e la CTA è chiara e ben posizionata. La struttura per la conversione è completa e ben ottimizzata per il target di piccoli commercianti e professionisti mobili.`
     },
 	{
       profile: "Redattore di Annunci di Lavoro",
       title: "XXXXX",
       context: "DigitalMinds, una piccola agenzia di marketing, sta cercando di assumere un Social Media Manager. L'HR manager, che è anche il responsabile amministrativo, ha buttato giù una bozza di annuncio da pubblicare su LinkedIn.",
       input: "Titolo: Cercasi Social Media Manager Siamo un'agenzia di marketing in crescita a Bologna. Cerchiamo una persona che gestisca i social per i nostri clienti. Deve saper creare contenuti (testi, grafiche base, video brevi). Deve pianificare il calendario editoriale. Deve gestire le campagne pubblicitarie su Meta (Facebook/Instagram) e LinkedIn. Richiesta esperienza di almeno 2-3 anni in un ruolo simile. Deve conoscere bene i tool di social media management (es. Hootsuite, Buffer). Deve saper analizzare i dati e fare reportistica. Offriamo un ambiente giovane e dinamico. Contratto a tempo indeterminato, RAL da definire in base all'esperienza. Mandare CV a info@digitalminds.it. Bello se conosce anche TikTok e Google Analytics.",
-      output: "",
-      qualityScore: "01",
-      reasoning: ""
+      output: `**Titolo del Lavoro**
+Specialista in Strategia e Gestione dei Social Media
+
+**Chi Siamo**
+Siamo un’agenzia di marketing digitale in forte espansione con sede a Bologna, guidata dalla passione per la creazione di strategie di comunicazione efficaci. Crediamo nel potenziale della collaborazione, dell'innovazione e di un ambiente di lavoro giovane e stimolante, dove ogni contributo individuale è valorizzato per il successo collettivo.
+
+**Le Tue Responsabilità**
+*   Sviluppare e implementare strategie di social media efficaci per una varietà di clienti in diversi settori.
+*   Pianificare, creare e curare contenuti originali (testi persuasivi, grafiche di base e brevi formati video) ottimizzati per ciascuna piattaforma.
+*   Gestire e mantenere aggiornati i calendari editoriali.
+*   Ideare, lanciare e monitorare campagne pubblicitarie a pagamento (Paid Social) sulle piattaforme Meta (Facebook/Instagram) e LinkedIn.
+*   Analizzare le performance delle attività sui social media, estrarre insight significativi e produrre reportistica chiara per i clienti.
+*   Mantenersi costantemente aggiornati sulle ultime tendenze e aggiornamenti degli algoritmi delle piattaforme social.
+
+**Requisiti Fondamentali**
+*   Esperienza comprovata di almeno 2-3 anni nella gestione professionale di canali social media o in un ruolo equivalente.
+*   Padronanza nell'utilizzo di tool di gestione e scheduling per i social media (es. Hootsuite, Buffer o equivalenti).
+*   Capacità dimostrata di ideazione e produzione di contenuti creativi (copywriting e basi di grafica/video editing).
+*   Solida competenza nella gestione e nell'ottimizzazione di campagne advertising su Meta e LinkedIn.
+*   Ottime capacità analitiche e di reportistica per misurare il ROI delle attività.
+
+**Competenze Apprezzate**
+*   Esperienza nella gestione e nella strategia di contenuti per la piattaforma TikTok.
+*   Familiarità con i principi e gli strumenti di Google Analytics per la misurazione del traffico web derivante dai social.
+*   Conoscenza di software di editing video o grafici più avanzati.
+
+**Cosa Offriamo**
+*   Contratto a tempo indeterminato, per una collaborazione stabile e a lungo termine.
+*   Retribuzione competitiva, commisurata all'effettiva esperienza e competenza del candidato/a (RAL da definire in fase di colloquio).
+*   Un ambiente di lavoro dinamico, collaborativo e orientato alla crescita professionale continua.
+*   Opportunità reali di sviluppo di carriera all'interno dell'agenzia.
+*   Flessibilità e supporto per la formazione continua.`,
+qualityScore: 96,
+reasoning: `La trasformazione da 'TESTO ORIGINALE' a 'TESTO REVISIONATO' è estremamente efficace. Il titolo è stato elevato da generico a professionale ('Specialista in Strategia e Gestione dei Social Media'). La struttura è stata completamente riorganizzata utilizzando intestazioni chiare (Chi Siamo, Responsabilità, Requisiti, Offerta), rendendo l'annuncio facilmente scansionabile. La Chiarezza del Ruolo è notevolmente migliorata grazie all'uso di punti elenco e verbi d'azione mirati (es. 'Sviluppare e implementare strategie'). L'Attrattività è potenziata dalla sezione 'Chi Siamo' che comunica valori aziendali (passione, collaborazione, innovazione) e dalla sezione 'Cosa Offriamo' che rende espliciti i benefici (stabilità, crescita). Infine, l'inclusività è migliorata sostituendo la terminologia secca con formulazioni più neutre e aggiungendo '/a' dove appropriato (es. candidato/a) o utilizzando il linguaggio professionale neutro (es. 'Specialista').`
     }
 ];
 

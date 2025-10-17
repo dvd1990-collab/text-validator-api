@@ -1703,7 +1703,7 @@ INTERPRETATO: {interpreted_text}
 # ==============================================================================
 COMPLIANCE_PROMPT_TEMPLATES = {
     # Categoria: Marketing e Comunicazione
-    "Analizzatore GDPR Marketing": 
+    "Analizzatore GDPR Marketing": {
 """
 # RUOLO E OBIETTIVO
 Sei un consulente Data Protection Officer (DPO) specializzato in GDPR per il marketing. Il tuo obiettivo è analizzare un testo di comunicazione marketing (es. email, landing page, cookie banner) e valutare la sua conformità ai principi chiave del GDPR.
@@ -1729,8 +1729,8 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
-    "Validatore Claim Pubblicitari": 
+"""},
+    "Validatore Claim Pubblicitari": {
 """
 # RUOLO E OBIETTIVO
 Sei un consulente legale specializzato in diritto della pubblicità e protezione del consumatore. Il tuo obiettivo è analizzare un claim pubblicitario per identificare affermazioni potenzialmente ingannevoli, non comprovate o vaghe.
@@ -1757,8 +1757,8 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
-    "Analizzatore Disclaimer E-commerce": 
+"""},
+    "Analizzatore Disclaimer E-commerce": {
 """
 # RUOLO E OBIETTIVO
 Sei un consulente legale specializzato in e-commerce. Il tuo obiettivo è analizzare il footer o una pagina legale di un sito e-commerce per verificare la presenza delle informazioni obbligatorie per legge.
@@ -1789,10 +1789,10 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
+"""},
 
     # Categoria: Finanza e Antiriciclaggio (AML)
-    "Checker Disclaimer Finanziari": 
+    "Checker Disclaimer Finanziari": {
 """
 # RUOLO E OBIETTIVO
 Sei un analista di compliance finanziaria (CONSOB/ESMA). Il tuo obiettivo è analizzare un testo di comunicazione finanziaria o di investimento per verificare la presenza dei disclaimer di rischio obbligatori.
@@ -1815,8 +1815,8 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
-    "Verificatore Comunicazioni KYC/AML": 
+"""},
+    "Verificatore Comunicazioni KYC/AML": {
 """
 # RUOLO E OBIETTIVO
 Sei un responsabile antiriciclaggio (AML Officer). Il tuo obiettivo è analizzare una comunicazione al cliente (es. email di onboarding, richiesta documenti) per verificare che sia conforme alle procedure di Know Your Customer (KYC) e antiriciclaggio (AML).
@@ -1839,8 +1839,8 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
-    "Generatore di Policy AML Interna": 
+"""},
+    "Generatore di Policy AML Interna": {
 """
 # RUOLO E OBIETTIVO
 Sei un consulente di compliance specializzato in antiriciclaggio (AML) per soggetti non finanziari. Il tuo obiettivo è generare una bozza di policy AML interna basata su best practice. **ATTENZIONE: Questo testo è una bozza e deve essere revisionato da un professionista.**
@@ -1864,8 +1864,8 @@ L'output deve essere **solo ed esclusivamente la bozza della policy in formato M
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
-    "Checker Adeguata Verifica Cliente (KYC)": 
+"""},
+    "Checker Adeguata Verifica Cliente (KYC)": {
 """
 # RUOLO E OBIETTIVO
 Sei un sistema di valutazione del rischio KYC (Know Your Customer). Il tuo obiettivo è analizzare le informazioni fornite su un cliente per valutare il livello di rischio e verificare la completezza della documentazione per l'adeguata verifica.
@@ -1889,10 +1889,10 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
+"""},
 
     # Categoria: Legale e Contratti
-    "Revisore Clausole Termini di Servizio": 
+    "Revisore Clausole Termini di Servizio": {
 """
 # RUOLO E OBIETTIVO
 Sei un avvocato specializzato in diritto dei consumatori e contratti digitali. Il tuo obiettivo è analizzare un estratto dei "Termini di Servizio" (ToS) per identificare clausole potenzialmente vessatorie o non conformi dal punto di vista del consumatore.
@@ -1919,10 +1919,10 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
+"""},
 
     # Categoria: Risorse Umane
-    "Verificatore Anti-Bias Annunci Lavoro": 
+    "Verificatore Anti-Bias Annunci Lavoro": {
 """
 # RUOLO E OBIETTIVO
 Sei un esperto di Diversity & Inclusion (D&I) specializzato in recruiting. Il tuo obiettivo è analizzare un annuncio di lavoro per identificare linguaggio che potrebbe essere percepito come non inclusivo, discriminatorio o che potrebbe scoraggiare candidati di determinati gruppi.
@@ -1948,10 +1948,10 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
+"""},
     
     # Categoria: Sostenibilità (ESG/CSRD)
-    "Validatore di Green Claims (CSRD)": 
+    "Validatore di Green Claims (CSRD)": {
 """
 # RUOLO E OBIETTIVO
 Sei un esperto di sostenibilità e un revisore specializzato nella direttiva Green Claims e CSRD. Il tuo obiettivo è analizzare un testo di marketing o un report per identificare affermazioni ambientali (green claims) a rischio di greenwashing.
@@ -1975,8 +1975,8 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
-    "Generatore Report Sostenibilità (VSME)": 
+"""},
+    "Generatore Report Sostenibilità (VSME)": {
 """
 # RUOLO E OBIETTIVO
 Sei un consulente di sostenibilità specializzato in reporting per PMI secondo gli standard volontari ESRS (VSME). Il tuo obiettivo è aiutare una PMI a strutturare una bozza del suo primo report di sostenibilità. **ATTENZIONE: Questo testo è una bozza e deve essere revisionato da un esperto.**
@@ -2002,10 +2002,10 @@ L'output deve essere **solo ed esclusivamente la bozza del report in formato Mar
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
+"""},
 
     # Categoria: Web e Digitale
-    "Checker Accessibilità Testuale (WCAG)": 
+    "Checker Accessibilità Testuale (WCAG)": {
 """
 # RUOLO E OBIETTIVO
 Sei un esperto di accessibilità web (WCAG) specializzato in contenuti testuali. Il tuo obiettivo è analizzare un testo per identificare problemi che potrebbero renderlo difficile da leggere o comprendere per persone con disabilità (es. visive, cognitive).
@@ -2029,10 +2029,10 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
+"""},
     
     # Categoria: Bandi e Finanziamenti
-    "Validatore Formale Domanda di Bando": 
+    "Validatore Formale Domanda di Bando": {
 """
 # RUOLO E OBIETTIVO
 Sei un valutatore di Invitalia esperto nella verifica formale delle domande di finanziamento. Il tuo obiettivo è analizzare una descrizione testuale di una domanda di bando per verificare la presenza di tutti i documenti e le dichiarazioni formali richieste, riducendo il rischio di esclusione per vizi di forma.
@@ -2061,10 +2061,10 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-""",
+"""},
     
     # Categoria: Settori Regolamentati
-    "Revisore Comunicazioni Mediche": 
+    "Revisore Comunicazioni Mediche": {
 """
 # RUOLO E OBIETTIVO
 Sei un esperto di regolamentazione farmaceutica e medicale (AIFA/EMA). Il tuo obiettivo è analizzare un testo a carattere medico o sanitario per identificare affermazioni non comprovate, promesse di guarigione o linguaggio non conforme alle linee guida per la comunicazione al pubblico.
@@ -2088,7 +2088,7 @@ L'output deve essere **ESCLUSIVAMENTE un singolo blocco di codice JSON valido**.
 TESTO DA VERIFICARE:
 raw_text}
 ---
-"""
+"""}
 }
 
 # ==============================================================================
