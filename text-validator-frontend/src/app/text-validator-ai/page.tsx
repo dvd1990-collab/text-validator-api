@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 
-// --- NUOVE STRUTTURE DATI PER I PROFILI ---
+// --- STRUTTURE DATI PER I PROFILI ---
 
 const validatorProfiles = {
   "Comunicazione e PR": [
@@ -32,7 +32,7 @@ const validatorProfiles = {
   ],
   "Documentazione Tecnica e Legale": [
     { name: "Traduttore Tecnico IT", description: "Traduce documentazione tecnica IT mantenendo la precisione terminologica." },
-    { name: "Termini e Condizioni E-commerce", description: "Genera un modello di T&C per siti e-commerce." }
+    { name: "Redattore Termini e Condizioni E-commerce", description: "Genera un modello di T&C per siti e-commerce." }
   ]
 };
 
@@ -60,7 +60,7 @@ const interpreterProfiles = {
         { name: "Sintetizzatore di Ricerche di Mercato", description: "Riassume report e articoli di settore per evidenziare trend e insight." }
     ],
     "Bandi e Finanziamenti": [
-        { name: "Analisi di Capitolati di Gara e Bandi", description: "Estrae requisiti, scadenze e criteri di valutazione da bandi pubblici." }
+        { name: "Analista di Capitolati di Gara e Bandi", description: "Estrae requisiti, scadenze e criteri di valutazione da bandi pubblici." }
     ],
     "Risorse Umane": [
         { name: "Assistente Valutazioni Performance", description: "Fornisce modelli e frasi per scrivere feedback costruttivi." },
@@ -102,6 +102,32 @@ const complianceProfiles = {
     ]
 };
 
+const strategistProfiles = {
+  "Business & Corporate Strategy": [
+    { name: "Sviluppatore di Business Model Canvas", description: "Traduci un'idea di business in un Business Model Canvas strutturato e validabile." },
+    { name: "Analista di Vantaggio Competitivo (Porter's Five Forces)", description: "Analizza la struttura di un settore industriale usando il framework delle Cinque Forze di Porter." },
+    { name: "Generatore di Mission & Vision Statement", description: "Distilla l'essenza della tua azienda in Mission e Vision statement potenti e autentici." },
+    { name: "Strutturatore di Pitch per Investitori (Outline)", description: "Crea una struttura logica e completa per un pitch deck di 10-12 slide per catturare l'attenzione degli investitori." }
+  ],
+  "Marketing & Product Development": [
+    { name: "Pianificatore di Strategia Go-to-Market (GTM)", description: "Genera un piano strategico Go-to-Market (GTM) completo per il lancio di nuovi prodotti." },
+    { name: "Ideatore di Pillar Page e Content Cluster", description: "Progetta architetture di contenuti SEO basate sul modello 'topic cluster'." },
+    { name: "Sviluppatore di Buyer Persona", description: "Trasforma descrizioni generiche dei clienti in profili Buyer Persona dettagliati e umanizzati." },
+    { name: "Generatore di Brief Creativo per Campagne", description: "Crea un template di brief strutturato e pre-compilato per commissionare campagne marketing." },
+    { name: "Strutturatore di Product Requirements Document (PRD)", description: "Redigi un PRD chiaro e completo che funga da 'single source of truth' per lo sviluppo." }
+  ],
+  "Finance & Operations": [
+    { name: "Redattore di Comunicazioni agli Stakeholder (Finanziarie)", description: "Crea bozze di comunicati stampa o email formali per notizie finanziarie importanti." },
+    { name: "Generatore di Policy Aziendali (Bozza Strategica)", description: "Definisci lo scopo strategico e i principi guida di nuove policy aziendali." }
+  ],
+  "Human Resources & Talent Management": [
+    { name: "Architetto di Programmi di Onboarding", description: "Progetta un piano di onboarding dettagliato per i primi 30, 60 e 90 giorni di un nuovo assunto." },
+    { name: "Disegnatore di Piani di Sviluppo Carriera", description: "Fornisce un template strutturato per Piani di Sviluppo Individuale (IDP)." },
+    { name: "Pianificatore di Campagne di Employer Branding", description: "Sviluppa un piano di campagna strategico per attrarre talenti specifici." },
+    { name: "Strutturatore di Sondaggi sul Coinvolgimento dei Dipendenti", description: "Genera un set di domande pertinenti per misurare il clima e l'engagement aziendale." }
+  ]
+};
+
 export default function TextValidatorAIPage() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-gray-900 p-8 text-white">
@@ -115,7 +141,7 @@ export default function TextValidatorAIPage() {
           </p>
         </header>
 
-        {/* --- SEZIONE REINSERITA: Come Funziona --- */}
+        {/* --- SEZIONE Come Funziona --- */}
         <section className="mb-16 py-16">
           <h2 className="text-4xl font-bold text-center text-blue-300 mb-12">Come Funziona il Doppio Controllo AI</h2>
           <div className="flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0 md:space-x-8">
@@ -138,13 +164,43 @@ export default function TextValidatorAIPage() {
             </div>
           </div>
         </section>
+
+        {/* --- SEZIONE POTENZA DELLA SUITE INTEGRATA --- */}
+        <section className="mb-16 py-16">
+          <h2 className="text-4xl font-bold text-center text-blue-300 mb-12">Da Strumenti a Sistema Operativo Documentale</h2>
+          <div className="flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0 md:space-x-8">
+            <div className="md:w-1/2">
+              <img 
+                src="/placeholder-suite-workflow.png"
+                alt="Diagramma che mostra il flusso da Strategist a Validator, Interpreter e Compliance Checkr" 
+                className="rounded-lg shadow-xl w-full h-auto object-cover"
+              />
+            </div>
+            <div className="md:w-1/2 space-y-6 text-left">
+              <p className="text-gray-300 text-lg">
+                Il vero valore della nostra piattaforma non risiede nei singoli moduli, ma nella loro <strong>sinergia</strong>. Copriamo l'intero ciclo di vita del documento, trasformando un'idea grezza in un asset aziendale finale, rifinito e sicuro.
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 pl-5">
+                  <li><strong>Parti con Strategist:</strong> Genera la struttura di un business plan o di una campagna marketing.</li>
+                  <li><strong>Perfeziona con Validator:</strong> Raffina il copy generato, allineandolo al tuo Tone of Voice.</li>
+                  <li><strong>Arricchisci con Interpreter:</strong> Analizza i dati di mercato o i feedback dei clienti da includere.</li>
+                  <li><strong>Valida con Compliance Checkr:</strong> Assicurati che ogni claim e disclaimer sia a prova di rischio.</li>
+              </ul>
+               <div className="text-center mt-8">
+                  <Link href="/pricing" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md">
+                      Sblocca l'Intera Suite
+                  </Link>
+              </div>
+            </div>
+          </div>
+        </section>
 		
-		{/* --- NUOVA SEZIONE: CUSTOM TONE OF VOICE --- */}
-        <section className="mb-16 py-16 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+		{/* --- SEZIONE CUSTOM TONE OF VOICE --- */}
+        <section className="mb-16 py-16">
           <h2 className="text-4xl font-bold text-center text-blue-300 mb-0">Prendi il Controllo: Il Tuo Tone of Voice,</h2>
 		  <h2 className="text-4xl font-bold text-center text-blue-300 mb-12">La Nostra AI</h2>
           <div className="flex flex-col md:flex-row-reverse items-center justify-around space-y-8 md:space-y-0 md:space-x-8 px-8">
-            <div className="md:w-1/2">
+            <div className="md:w-1/3">
               <img 
                 src="/placeholder-ctov-image.png"
                 alt="Interfaccia per la creazione di una Voce Personalizzata" 
@@ -165,7 +221,7 @@ export default function TextValidatorAIPage() {
           </div>
         </section>
 		
-        {/* --- SEZIONE REINSERITA: Funzionalità Business --- */}
+        {/* --- SEZIONE Funzionalità Business --- */}
         <section className="mb-16 py-16">
 		  <h2 className="text-4xl font-bold text-center text-blue-400 mb-12">Le Funzionalità che Trasformano il Tuo Business</h2>
 		  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -201,6 +257,27 @@ export default function TextValidatorAIPage() {
 			</div>
 		  </div>
 		</section>
+
+        {/* --- SEZIONE STRATEGIST (AGGIUNTA E CORRETTA) --- */}
+        <section className="py-16">
+          <h2 className="text-4xl font-bold text-center text-purple-400 mb-4">Strategist AI</h2>
+          <p className="text-lg text-center text-gray-400 mb-12 max-w-3xl mx-auto">
+            Supera il blocco della pagina bianca e trasforma le idee in azione. Strategist è il tuo partner per l'ideazione e la pianificazione. Fornisce framework collaudati, piani strutturati e bozze strategiche per aiutarti a definire il "cosa" e il "perché", prima ancora di scrivere la prima parola.
+          </p>
+          {Object.entries(strategistProfiles).map(([category, profiles]) => (
+            <div key={category} className="mb-10">
+              <h3 className="text-2xl font-semibold text-purple-300 border-b-2 border-purple-800 pb-2 mb-6">{category}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {profiles.map((profile) => (
+                  <div key={profile.name} className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <h4 className="text-xl font-bold text-white mb-2">{profile.name}</h4>
+                    <p className="text-gray-400">{profile.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
 
         {/* Sezione Validator */}
         <section className="py-16">
@@ -265,7 +342,6 @@ export default function TextValidatorAIPage() {
           ))}
 		</section>
         
-        {/* --- FINE SEZIONI PROFILI AGGIORNATE --- */}
       </div>
     </main>
   );

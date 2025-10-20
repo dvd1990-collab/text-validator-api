@@ -27,10 +27,10 @@ from jose import jwt, jwk # pip install python-jose
 
 PLANS = {
     "free": {
-        "shared_limit": 3,
-        "max_input_length": 500,
+        "shared_limit": 5,
+        "max_input_length": 1500,
         "validator": {
-            "allowed_profiles": ["Generico", "L'Umanizzatore"],
+            "allowed_profiles": ["Generico", "L'Umanizzatore", "Social Media Manager B2B", "Ottimizzatore Email di Vendita"],
             "quality_check": False
         },
         "interpreter": {
@@ -38,35 +38,57 @@ PLANS = {
             "quality_check": False
         },
         "compliance_checkr": {
-            "enabled": False 
+            "enabled": False,
+            "allowed_profiles": []
         },
-        "ctov": { 
-        "enabled": False, 
-        "max_profiles": 0 
-        } 
+        "strategist": {
+            "enabled": False,
+            "allowed_profiles": []
+        },
+        "ctov": {
+            "enabled": False,
+            "max_profiles": 0
+        }
     },
     "starter": {
-        "shared_limit": 10,
-        "max_input_length": 10000,
+        "shared_limit": 20,
+        "max_input_length": 15000,
         "validator": {
-            "allowed_profiles": ["Generico", "L'Umanizzatore", "Analista Vantaggio Competitivo (UVP)", "Copywriter Persuasivo", "Scrittore di Newsletter", "Generatore Descrizioni Prodotto E-commerce", "Scrittore Testi per Landing Page", "Redattore di Annunci di Lavoro", "Assistente Valutazioni Performance"],
+            "allowed_profiles": [
+                # Profili Free
+                "Generico", "L'Umanizzatore", "Social Media Manager B2B", "Ottimizzatore Email di Vendita",
+                # Profili Aggiuntivi Starter
+                "Copywriter Persuasivo", "Scrittore di Newsletter", "Generatore Descrizioni Prodotto E-commerce", 
+                "Scrittore Testi per Landing Page", "Redattore di Annunci di Lavoro", "Scrittore di Proposte Commerciali",
+                "Redattore di Sezioni di Business Plan", "Comunicatore di Crisi PR"
+            ],
             "quality_check": True
         },
         "interpreter": {
-            "allowed_profiles": ["Spiega in Parole Semplici", "Analista Contratto di Vendita", "Revisore Contratto di Acquisto", "Estrattore P&L Aziendale", "Analista Bilancio Aziendale", "Verificatore Fatture/Bollette", "Analizzatore di Feedback dei Clienti", "Sintetizzatore di Meeting e Trascrizioni", "Assistente Valutazioni Performance"],
+            "allowed_profiles": [
+                # Profilo Free
+                "Spiega in Parole Semplici",
+                # Profili Aggiuntivi Starter
+                "Sintetizzare di Meeting e Trascrizioni", "Analizzatore di Feedback dei Clienti", "Estrattore di Dati Strutturati"
+            ],
             "quality_check": True
         },
         "compliance_checkr": {
-            "enabled": False 
+            "enabled": True, # Abilitato per l'assaggio
+            "allowed_profiles": ["Verificatore Anti-Bias Annunci Lavoro", "Analizzatore Disclaimer E-commerce"]
         },
-        "ctov": { 
-        "enabled": True, 
-        "max_profiles": 2 
-        } 
+        "strategist": {
+            "enabled": True, # Abilitato per l'assaggio
+            "allowed_profiles": ["Sviluppatore di Buyer Persona", "Ideatore di Pillar Page e Content Cluster", "Generatore di Brief Creativo per Campagne"]
+        },
+        "ctov": {
+            "enabled": True,
+            "max_profiles": 2
+        }
     },
     "pro": {
-        "shared_limit": 100,
-        "max_input_length": 50000,
+        "shared_limit": 150,
+        "max_input_length": 100000,
         "validator": {
             "allowed_profiles": "all",
             "quality_check": True
@@ -76,31 +98,35 @@ PLANS = {
             "quality_check": True
         },
         "compliance_checkr": {
-            "enabled": True 
+            "enabled": True,
+            "allowed_profiles": "all"
         },
-        "ctov": { 
-        "enabled": True, 
-        "max_profiles": 5 
-        } 
+        "strategist": {
+            "enabled": True,
+            "allowed_profiles": "all"
+        },
+        "ctov": {
+            "enabled": True,
+            "max_profiles": 10
+        }
+    },
+    "business": { # NUOVO PIANO
+        "shared_limit": -1, # Illimitato o gestito a livello di team
+        "max_input_length": None,
+        "validator": { "allowed_profiles": "all", "quality_check": True },
+        "interpreter": { "allowed_profiles": "all", "quality_check": True },
+        "compliance_checkr": { "enabled": True, "allowed_profiles": "all" },
+        "strategist": { "enabled": True, "allowed_profiles": "all" },
+        "ctov": { "enabled": True, "max_profiles": -1 } # Illimitato
     },
     "admin": {
-        "shared_limit": -1, # Illimitato
-        "max_input_length": None, # Nessun limite per l'admin
-        "validator": {
-            "allowed_profiles": "all",
-            "quality_check": True
-        },
-        "interpreter": {
-            "allowed_profiles": "all",
-            "quality_check": True
-        },
-        "compliance_checkr": {
-            "enabled": True 
-        },
-        "ctov": { 
-        "enabled": True, 
-        "max_profiles": -1 
-        } 
+        "shared_limit": -1,
+        "max_input_length": None,
+        "validator": { "allowed_profiles": "all", "quality_check": True },
+        "interpreter": { "allowed_profiles": "all", "quality_check": True },
+        "compliance_checkr": { "enabled": True, "allowed_profiles": "all" },
+        "strategist": { "enabled": True, "allowed_profiles": "all" },
+        "ctov": { "enabled": True, "max_profiles": -1 }
     }
 }
 
@@ -177,6 +203,7 @@ class UserStatusResponse(BaseModel):
     validator_profiles: list[str] | str
     interpreter_profiles: list[str] | str
     compliance_access: bool
+    strategist_access: bool # NUOVO
     ctov_access: bool               
     ctov_max_profiles: int          
     ctov_profiles: List[CTOVProfileResponse] 
@@ -194,6 +221,10 @@ class InterpretationResponse(BaseModel):
 
 class ComplianceResponse(BaseModel):
     compliance_report: str
+    usage: UsageInfo
+    
+class StrategyResponse(BaseModel):
+    strategy_text: str
     usage: UsageInfo
 
 limiter = Limiter(key_func=get_remote_address)
@@ -218,6 +249,56 @@ app.add_middleware(
 )
 # --- FINE CONFIGURAZIONE CORS ---
 
+
+# ==============================================================================
+# === NUOVO ENDPOINT: STRATEGIST ===============================================
+# ==============================================================================
+@app.post("/strategist", response_model=StrategyResponse, tags=["Strategist"])
+@limiter.limit("5/minute")
+async def create_strategy(request: Request, payload: TextInput, authorization: str = Header(None)):
+    user_id, profile = await get_user_profile_from_token(authorization)
+    
+    # --- LOGICA DI GESTIONE PIANI PER STRATEGIST ---
+    user_tier_name = profile.get('subscription_tier', 'free')
+    user_role = profile.get('role', 'user')
+    plan = PLANS.get("admin") if user_role == 'admin' else PLANS.get(user_tier_name, PLANS["free"])
+    
+    if not plan["strategist"]["enabled"]:
+        raise HTTPException(status_code=403, detail="Lo Strategist non è incluso nel tuo piano. Esegui l'upgrade al piano Pro.")
+
+    # Verifica lunghezza massima dell'input
+    max_length = plan.get("max_input_length")
+    if max_length is not None and len(payload.text) > max_length:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Il testo inserito supera il limite di {max_length} caratteri per il tuo piano."
+        )
+    
+    # Verifica limite di chiamate condiviso
+    shared_limit = plan["shared_limit"]
+    current_count = profile.get('usage_count', 0)
+    if shared_limit != -1:
+        today = str(date.today())
+        if profile.get('last_used_date') != today:
+            current_count = 0
+            supabase.table('profiles').update({'last_used_date': today, 'usage_count': 0}).eq('id', user_id).execute()
+        if current_count >= shared_limit:
+            raise HTTPException(status_code=429, detail=f"Hai superato il limite giornaliero condiviso di {shared_limit} chiamate.")
+            
+    try:
+        strategy_text = await ai_core.generate_strategy(payload.text, profile_name=payload.profile_name)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore durante la generazione della strategia: {str(e)}")
+    
+    # Aggiornamento conteggio
+    new_count = current_count + 1
+    if shared_limit != -1:
+        supabase.table('profiles').update({'usage_count': new_count}).eq('id', user_id).execute()
+
+    return StrategyResponse(
+            strategy_text=strategy_text.strip(),
+            usage=UsageInfo(count=new_count, limit=shared_limit)
+        )
 
 @app.get("/health", tags=["Monitoring"])
 async def read_health():
@@ -794,6 +875,7 @@ async def get_user_status(request: Request, authorization: str = Header(None)):
         validator_profiles=plan["validator"]["allowed_profiles"],
         interpreter_profiles=plan["interpreter"]["allowed_profiles"],
         compliance_access=plan["compliance_checkr"]["enabled"],
+        strategist_access=plan["strategist"]["enabled"],
         ctov_access=plan["ctov"]["enabled"],
         ctov_max_profiles=plan["ctov"]["max_profiles"],
         ctov_profiles=ctov_profiles_data

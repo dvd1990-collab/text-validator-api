@@ -21,6 +21,7 @@ interface UsageContextType {
   validator_profiles: string[] | 'all';
   interpreter_profiles: string[] | 'all';
   complianceAccess: boolean;
+  strategistAccess: boolean;
   // --- NUOVI STATI PER CTOV ---
   ctovAccess: boolean;                // L'utente ha accesso alla feature?
   ctovMaxProfiles: number | null;     // Quanti profili può creare?
@@ -38,6 +39,7 @@ export const UsageProvider = ({ children }: { children: ReactNode }) => {
   const [validator_profiles, setValidatorProfiles] = useState<string[] | 'all'>([]);
   const [interpreter_profiles, setInterpreterProfiles] = useState<string[] | 'all'>([]);
   const [complianceAccess, setComplianceAccess] = useState<boolean>(false);
+  const [strategistAccess, setStrategistAccess] = useState<boolean>(false);
   
   // --- AGGIUNGI I NUOVI STATI PER CTOV ---
   const [ctovAccess, setCtovAccess] = useState<boolean>(false);
@@ -63,6 +65,7 @@ export const UsageProvider = ({ children }: { children: ReactNode }) => {
       setValidatorProfiles(data.validator_profiles);
       setInterpreterProfiles(data.interpreter_profiles);
 	  setComplianceAccess(data.compliance_access);
+	  setStrategistAccess(data.strategist_access);
 
       // --- AGGIORNA I NUOVI STATI CTOV CON I DATI DALL'API ---
       setCtovAccess(data.ctov_access);
@@ -83,6 +86,7 @@ export const UsageProvider = ({ children }: { children: ReactNode }) => {
     validator_profiles, 
     interpreter_profiles, 
     complianceAccess,
+	strategistAccess,
     ctovAccess,
     ctovMaxProfiles,
     ctovProfiles,
